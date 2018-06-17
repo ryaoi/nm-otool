@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/16 22:49:21 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 14:19:08 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 typedef struct          s_symbol
 {
 	char				*name;
-	char				type;
+	uint8_t				type;
 	uint64_t			value;
 	struct s_symbol		*next;
 }						t_symbol;
@@ -60,5 +60,5 @@ t_filenm				*add_filenm(t_filenm **head, char *name);
 int						init_secindex(t_secindex **head);
 int						handle_macho(t_filenm **file, void *ptr);
 int						get_symbol(t_filenm **file, t_secindex *secindex, void *ptr);
-
+int						sort_symbol(t_symbol **sym);
 #endif

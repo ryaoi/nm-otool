@@ -6,13 +6,31 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/16 21:16:29 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 14:20:01 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
 
+int				print_symbol(t_filenm *file, t_symbol *sym)
+{
+	while (sym != NULL)
+	{
+		if (file->type_flag & IS_64 && sym->value != 0)
+			ft_printf("%016lx", sym->value);
+		else if (file->type_flag & IS_64 && sym->value == 0)
+			ft_printf("% 16c", ' ');
+		else if (sym->value != 0)
+			ft_printf("%08lx", sym->value);
+		else
+			ft_printf("% 8c", ' ');
+		if (sym->type != '*')
+			ft_printf(" %c %s\n", sym->type, sym->name);
+		sym = sym->next;
+	}
+	return (EXIT_SUCCESS);
+}
 
 int				handle_arch(t_filenm **file, void *ptr)
 {
@@ -96,5 +114,6 @@ int     main(int argc, char **argv)
     file = NULL;
     if ((get_file(&file, argc, argv)) < 0)
         return (EXIT_FAILURE);
+	print_symbol(file, file->sym);
     return (EXIT_SUCCESS);
 }

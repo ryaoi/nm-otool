@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 14:19:08 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 21:02:30 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,10 @@ int						init_secindex(t_secindex **head);
 int						handle_macho(t_filenm **file, void *ptr);
 int						get_symbol(t_filenm **file, t_secindex *secindex, void *ptr);
 int						sort_symbol(t_symbol **sym);
+void					free_filenm(t_filenm **head);
+int						handle_fat(t_filenm **file, void *ptr);
+uint64_t				swap64(u_int64_t origin);
+uint32_t				swap32(u_int32_t origin);
+uint16_t				swap16(u_int16_t origin);
+
 #endif

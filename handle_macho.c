@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 16:34:32 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 22:07:02 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,9 @@ int							handle_macho(t_filenm **file, void *ptr)
 	if (((*file)->type_flag & IS_64))
 	{
 		header64 = (struct mach_header_64 *)ptr;
+		ft_printf("macho header:%lx\n", header64->magic);
 		get_secindex64(&((*file)->secindex), header64, ptr);
+		ft_printf("get_symbol\n");
 		get_symbol(file, (*file)->secindex, ptr);
 	}
 	else
@@ -143,5 +145,6 @@ int							handle_macho(t_filenm **file, void *ptr)
 	// ft_printf("%i->__DATA,__bss\n", (*file)->secindex->data_bss);
 		get_symbol(file, (*file)->secindex, ptr);
 	}
+	ft_printf("finished handle_macho\n");
 	return (EXIT_SUCCESS);
 }

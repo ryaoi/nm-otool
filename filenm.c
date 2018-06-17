@@ -6,13 +6,28 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:32:54 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 16:00:58 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 16:50:06 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-int					free_filenm(t_filenm **head)
+static void			free_symbol(t_symbol **sym)
+{
+	t_symbol		*ptr;
+	t_symbol		*next;
+
+	ptr = *sym;
+	while (ptr != NULL)
+	{
+		next = ptr->next;
+		free(ptr->name);
+		free(ptr);
+		ptr = next;
+	}
+}
+
+void				free_filenm(t_filenm **head)
 {
 	t_filenm		*ptr;
 	t_filenm		*next;
@@ -22,14 +37,15 @@ int					free_filenm(t_filenm **head)
 	{
 		next = ptr->next;
 		free(ptr->filename);
-		//free sym
 		if (ptr->err_msg != NULL)
 			free(ptr->err_msg);
+		else
+			free_symbol(&((ptr)->sym));
+		if (ptr->secindex != NULL)
+			free(ptr->secindex);
 		free(ptr);
 		ptr = next;	
 	}
-	free(head);
-	return(EXIT_SUCCESS);
 }
 
 t_filenm			*add_filenm(t_filenm **head, char *name)

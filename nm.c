@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 16:06:04 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 18:25:06 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,27 @@ int				handle_arch(t_filenm **file, void *ptr)
 	long			magic_number;
 
 	magic_number = *(long *)ptr;
-	if ((int)magic_number == MH_MAGIC_64 ||  (int)magic_number == MH_CIGAM_64)
+	if ((int)magic_number == MH_MAGIC_64 ||  (int)magic_number == MH_CIGAM_64\
+		|| (int)magic_number == FAT_MAGIC_64 || (int)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag += IS_64;
 	if (magic_number == MH_AR_64)
 		(*file)->type_flag += IS_AR;
 	if ((int)magic_number == MH_CIGAM_64 || (int)magic_number == MH_CIGAM\
-		|| (int)magic_number == FAT_CIGAM)
+		|| (int)magic_number == FAT_CIGAM || (int)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag += IS_SWAP;
-	if ((int)magic_number == FAT_MAGIC)
+	if ((int)magic_number == FAT_MAGIC || (int)magic_number == FAT_CIGAM
+	||(int)magic_number == FAT_MAGIC_64 || (int)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag = IS_FAT;
-	// if (((*file)->type_flag & IS_FAT))
-	// 	handle_fat(file, ptr);
+	ft_printf("is_64  :%d\n", (*file)->type_flag & IS_64);
+	ft_printf("is_AR  :%d\n", (*file)->type_flag & IS_AR);
+	ft_printf("is_FAT :%d\n", (*file)->type_flag & IS_FAT);
+	ft_printf("is_SWAP:%d\n", (*file)->type_flag & IS_SWAP);
+	if (((*file)->type_flag & IS_FAT))
+		handle_fat(file, ptr);
 	// if (((*file)->type_flag & IS_AR))
 	// 	handle_ar(file, ptr);
 	// else
-	ft_printf("handle_macho\n");
-	handle_macho(file, ptr);
+	// handle_macho(file, ptr);
 	return (EXIT_SUCCESS);
 }
 
@@ -126,5 +131,6 @@ int     main(int argc, char **argv)
     if ((get_file(&file, argc, argv)) < 0)
         return (EXIT_FAILURE);
 	print_symbol(argc, file);
+	free_filenm(&file);
     return (EXIT_SUCCESS);
 }

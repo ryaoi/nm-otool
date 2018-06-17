@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 15:20:19 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 16:34:15 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int						add_symbol(t_filenm **head, char *symname, \
 			ptr = ptr->next;
 		ptr->next = new;
 	}
+
 	return (EXIT_SUCCESS);
 }
 
@@ -85,11 +86,12 @@ int							get_symbol(t_filenm **file, \
 	int						i;
 	char					*stringtable;
 	struct nlist_64			*nlist64;
-	struct nlist			*nlist;
+	struct nlist			*nlist32;
 
 	i = 0;
 	sym = (struct symtab_command *)secindex->symtab_value;
 	nlist64 = (void *)ptr + sym->symoff;
+	nlist32 = (void *)ptr + sym->symoff;
 	stringtable = (void *)ptr + sym->stroff;
 	while(i < sym->nsyms)
 	{
@@ -97,8 +99,10 @@ int							get_symbol(t_filenm **file, \
 			add_symbol(file, stringtable + nlist64[i].n_un.n_strx, \
 			nlist64[i].n_type, nlist64[i].n_value, nlist64[i].n_sect);
 		else
-			add_symbol(file, stringtable + nlist[i].n_un.n_strx, \
-			nlist64[i].n_type, nlist[i].n_value, nlist[i].n_sect);
+		{
+			add_symbol(file, stringtable + nlist32[i].n_un.n_strx, \
+			nlist32[i].n_type, nlist32[i].n_value, nlist32[i].n_sect);
+		}
 		i++;
 	}
 	sort_symbol(&((*file)->sym));

@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/16 22:46:57 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 16:34:32 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ int							get_secindex(t_secindex **secindex, \
 	struct load_command		*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
+	i = 0;
 	while(i < header->ncmds)
 	{
 		if (lc->cmd == LC_SEGMENT)
@@ -137,10 +138,10 @@ int							handle_macho(t_filenm **file, void *ptr)
 	{
 		header = (struct mach_header *)ptr;
 		get_secindex(&((*file)->secindex), header, ptr);
+	// 		ft_printf("%i->__TEXT,__text\n", (*file)->secindex->text_text);
+	// ft_printf("%i->__DATA,__data\n", (*file)->secindex->data_data);
+	// ft_printf("%i->__DATA,__bss\n", (*file)->secindex->data_bss);
 		get_symbol(file, (*file)->secindex, ptr);
 	}
-	ft_printf("%i->__TEXT,__text\n", (*file)->secindex->text_text);
-	ft_printf("%i->__DATA,__data\n", (*file)->secindex->data_data);
-	ft_printf("%i->__DATA,__bss\n", (*file)->secindex->data_bss);
 	return (EXIT_SUCCESS);
 }

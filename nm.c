@@ -6,28 +6,39 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 14:20:01 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/17 16:06:04 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
 
-int				print_symbol(t_filenm *file, t_symbol *sym)
+int				print_symbol(int argc, t_filenm *file)
 {
-	while (sym != NULL)
+	t_symbol	*ptr;
+
+	while (file != NULL)
 	{
-		if (file->type_flag & IS_64 && sym->value != 0)
-			ft_printf("%016lx", sym->value);
-		else if (file->type_flag & IS_64 && sym->value == 0)
-			ft_printf("% 16c", ' ');
-		else if (sym->value != 0)
-			ft_printf("%08lx", sym->value);
-		else
-			ft_printf("% 8c", ' ');
-		if (sym->type != '*')
-			ft_printf(" %c %s\n", sym->type, sym->name);
-		sym = sym->next;
+		if (file->err_msg != NULL)
+			ft_printf("ft_nm: %s: %s", file->filename, file->err_msg);
+		if (argc > 2 && file->err_msg == NULL)
+			ft_printf("\n%s:\n", file->filename);
+		ptr = file->sym;
+		while (ptr != NULL)
+		{
+			if (file->type_flag & IS_64 && ptr->value != 0)
+				ft_printf("%016lx", ptr->value);
+			else if (file->type_flag & IS_64 && ptr->value == 0)
+				ft_printf("% 16c", ' ');
+			else if (ptr->value != 0)
+				ft_printf("%08lx", ptr->value);
+			else
+				ft_printf("% 8c", ' ');
+			if (ptr->type != '*')
+				ft_printf(" %c %s\n", ptr->type, ptr->name);
+			ptr = ptr->next;
+		}
+		file = file->next;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -36,7 +47,6 @@ int				handle_arch(t_filenm **file, void *ptr)
 {
 	long			magic_number;
 
-	ft_printf("handle_arch\n");
 	magic_number = *(long *)ptr;
 	if ((int)magic_number == MH_MAGIC_64 ||  (int)magic_number == MH_CIGAM_64)
 		(*file)->type_flag += IS_64;
@@ -52,6 +62,7 @@ int				handle_arch(t_filenm **file, void *ptr)
 	// if (((*file)->type_flag & IS_AR))
 	// 	handle_ar(file, ptr);
 	// else
+	ft_printf("handle_macho\n");
 	handle_macho(file, ptr);
 	return (EXIT_SUCCESS);
 }
@@ -76,7 +87,7 @@ int				handle_file(t_filenm **ptr)
 			 == MAP_FAILED)
 		(*ptr)->err_msg = ft_strdup("mmap failed\n");
 	else
-	handle_arch(ptr, mmap_ptr);
+		handle_arch(ptr, mmap_ptr);
 	if ((munmap(mmap_ptr, buf.st_size))< 0)
 		(*ptr)->err_msg = ft_strdup("munmap failed\n");
 	return (EXIT_SUCCESS);
@@ -114,6 +125,6 @@ int     main(int argc, char **argv)
     file = NULL;
     if ((get_file(&file, argc, argv)) < 0)
         return (EXIT_FAILURE);
-	print_symbol(file, file->sym);
+	print_symbol(argc, file);
     return (EXIT_SUCCESS);
 }

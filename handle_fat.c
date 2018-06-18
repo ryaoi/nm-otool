@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/17 16:55:37 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 22:06:13 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/18 17:28:35 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int							handle_fat(t_filenm **file, void *ptr)
 	struct fat_header		*fatheader;
 	int						i;
 	int						cpu_type;
+	int						offset;
 
 	i = 0;
 	if ((*file)->type_flag == (IS_FAT))
@@ -29,9 +30,15 @@ int							handle_fat(t_filenm **file, void *ptr)
 		while (i < swap32(fatheader->nfat_arch))
 		{
 			if (swap32(fatarch->cputype) == CPU_TYPE_X86_64)
+			{
 				cpu_type = CPU_TYPE_X86_64;
+				offset = swap32(fatarch->offset);
+			}
 			if (swap32(fatarch->cputype) == CPU_TYPE_I386 && cpu_type != CPU_TYPE_X86_64)
+			{
 				cpu_type = CPU_TYPE_I386;
+				offset = swap32(fatarch->offset);
+			}
 			fatarch = (void *)fatarch + sizeof(struct fat_arch);
 			i++;
 		}
@@ -39,26 +46,9 @@ int							handle_fat(t_filenm **file, void *ptr)
 		{
 			(*file)->type_flag -= IS_FAT;
 			(*file)->type_flag += IS_64;
-			handle_macho(file, ptr + 4096);
 		}
+		handle_macho(file, ptr + offset);
 		return (EXIT_SUCCESS);
 	}
-	// if (init_secindex(&((*file)->secindex)) < 0)
-	// 	return (EXIT_FAILURE);
-	// if (((*file)->type_flag & IS_64))
-	// {
-	// 	header64 = (struct mach_header_64 *)ptr;
-	// 	get_secindex64(&((*file)->secindex), header64, ptr);
-	// 	get_symbol(file, (*file)->secindex, ptr);
-	// }
-	// else
-	// {
-	// 	header = (struct mach_header *)ptr;
-	// 	get_secindex(&((*file)->secindex), header, ptr);
-	// // 		ft_printf("%i->__TEXT,__text\n", (*file)->secindex->text_text);
-	// // ft_printf("%i->__DATA,__data\n", (*file)->secindex->data_data);
-	// // ft_printf("%i->__DATA,__bss\n", (*file)->secindex->data_bss);
-	// 	get_symbol(file, (*file)->secindex, ptr);
-	// }
 	return (EXIT_SUCCESS);
 }

@@ -6,16 +6,20 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 16:34:15 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/18 18:10:41 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-static char				get_n_type_value(uint8_t n_type)
+static char				get_n_type_value(uint8_t n_type, uint64_t n_value)
 {
-	if ((n_type == (N_UNDF + N_EXT) || n_type == N_UNDF))
+	if ((n_type == (N_UNDF + N_EXT) || n_type == N_UNDF) && n_value == 0)
 		return ('U');
+	if (n_type == (N_UNDF + N_EXT))
+		return ('C');
+	if (n_type == N_UNDF)
+		return ('c');
 	else if (n_type == N_ABS)
 		return ('A');
 	else if (n_type == N_ABS + N_EXT)
@@ -27,13 +31,14 @@ static char				get_n_type_value(uint8_t n_type)
 	return (0);
 }
 
-char					get_type(t_secindex *secindex, uint8_t n_type, u_int16_t n_sect)
+char					get_type(t_secindex *secindex, uint8_t n_type, \
+								uint16_t n_sect, uint64_t n_value)
 {
 	char				ret_type;
 
-	if ((ret_type = get_n_type_value(n_type & N_TYPE)))
+	if ((ret_type = get_n_type_value(n_type, n_value)))
 		return (ret_type);
-	if (n_type == N_STAB || n_type == N_STAB + N_EXT)
+	if ((n_type & N_STAB))
 		return ('*');
 	if (n_sect == secindex->text_text && (n_type & N_EXT))
 		return ('T');
@@ -63,7 +68,7 @@ int						add_symbol(t_filenm **head, char *symname, \
 		return (EXIT_FAILURE);
 	if (!(new->name = ft_strdup(symname)))
 		return (EXIT_FAILURE);
-	new->type = get_type((*head)->secindex, n_type, n_sect);
+	new->type = get_type((*head)->secindex, n_type, n_sect, n_value);
 	new->value = n_value;
 	new->next = NULL;
 	if ((*head)->sym == NULL)

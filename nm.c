@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 18:25:06 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/18 18:04:42 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,20 @@ int				print_symbol(int argc, t_filenm *file)
 		ptr = file->sym;
 		while (ptr != NULL)
 		{
-			if (file->type_flag & IS_64 && ptr->value != 0)
+			if (ptr->type == '*')
+			{
+				ptr = ptr->next;
+				continue ;
+			}
+			if (file->type_flag & IS_64 && ptr->type != 'U')
 				ft_printf("%016lx", ptr->value);
-			else if (file->type_flag & IS_64 && ptr->value == 0)
+			else if (file->type_flag & IS_64 && ptr->type == 'U')
 				ft_printf("% 16c", ' ');
-			else if (ptr->value != 0)
+			else if (ptr->type != 'U')
 				ft_printf("%08lx", ptr->value);
 			else
 				ft_printf("% 8c", ' ');
-			if (ptr->type != '*')
-				ft_printf(" %c %s\n", ptr->type, ptr->name);
+			ft_printf(" %c %s\n", ptr->type, ptr->name);
 			ptr = ptr->next;
 		}
 		file = file->next;
@@ -67,8 +71,8 @@ int				handle_arch(t_filenm **file, void *ptr)
 		handle_fat(file, ptr);
 	// if (((*file)->type_flag & IS_AR))
 	// 	handle_ar(file, ptr);
-	// else
-	// handle_macho(file, ptr);
+	else
+		handle_macho(file, ptr);
 	return (EXIT_SUCCESS);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 21:02:30 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/18 19:16:23 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define				IS_SWAP 	1
 
 # define				MH_AR_64	0x213C617263683E0A
+# define				MH_RA_64	0x0a3e686372613c21
 
 typedef struct          s_symbol
 {
@@ -56,6 +57,18 @@ typedef struct			s_filenm
 	struct s_filenm		*next;
 }						t_filenm;
 
+typedef struct			s_obj_header
+{
+	char				name[16];
+	char				tiemstamp[12];
+	char				user_id[6];
+	char				group_id[6];
+	char				mode[8];
+	char				size[8];
+	char				end_header[4];
+	char				longname[16];
+}						t_obj_header;
+
 t_filenm				*add_filenm(t_filenm **head, char *name);
 int						init_secindex(t_secindex **head);
 int						handle_macho(t_filenm **file, void *ptr);
@@ -63,6 +76,7 @@ int						get_symbol(t_filenm **file, t_secindex *secindex, void *ptr);
 int						sort_symbol(t_symbol **sym);
 void					free_filenm(t_filenm **head);
 int						handle_fat(t_filenm **file, void *ptr);
+int						handle_ar(t_filenm **file, void *ptr);
 uint64_t				swap64(u_int64_t origin);
 uint32_t				swap32(u_int32_t origin);
 uint16_t				swap16(u_int16_t origin);

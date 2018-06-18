@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/18 18:04:42 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/18 19:07:43 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,11 @@ int				handle_arch(t_filenm **file, void *ptr)
 	long			magic_number;
 
 	magic_number = *(long *)ptr;
+	ft_printf("%x\n", magic_number);
 	if ((int)magic_number == MH_MAGIC_64 ||  (int)magic_number == MH_CIGAM_64\
 		|| (int)magic_number == FAT_MAGIC_64 || (int)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag += IS_64;
-	if (magic_number == MH_AR_64)
+	if (magic_number == (long)MH_AR_64 || magic_number == (long)MH_RA_64)
 		(*file)->type_flag += IS_AR;
 	if ((int)magic_number == MH_CIGAM_64 || (int)magic_number == MH_CIGAM\
 		|| (int)magic_number == FAT_CIGAM || (int)magic_number == FAT_CIGAM_64)
@@ -69,8 +70,8 @@ int				handle_arch(t_filenm **file, void *ptr)
 	ft_printf("is_SWAP:%d\n", (*file)->type_flag & IS_SWAP);
 	if (((*file)->type_flag & IS_FAT))
 		handle_fat(file, ptr);
-	// if (((*file)->type_flag & IS_AR))
-	// 	handle_ar(file, ptr);
+	if (((*file)->type_flag & IS_AR))
+	 	handle_ar(file, ptr);
 	else
 		handle_macho(file, ptr);
 	return (EXIT_SUCCESS);

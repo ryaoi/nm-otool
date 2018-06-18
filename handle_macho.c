@@ -131,7 +131,6 @@ int							handle_macho(t_filenm **file, void *ptr)
 	if (((*file)->type_flag & IS_64))
 	{
 		header64 = (struct mach_header_64 *)ptr;
-		ft_printf("macho header:%lx\n", header64->magic);
 		get_secindex64(&((*file)->secindex), header64, ptr);
 		get_symbol(file, (*file)->secindex, ptr);
 	}

@@ -13,15 +13,16 @@
 #include "ft_nm.h"
 
 
-int				print_symbol(int argc, t_filenm *file)
+int				print_symbol(int total_filenm, t_filenm *file)
 {
 	t_symbol	*ptr;
 
+	ft_printf("how many files to print?:%d\n", total_filenm);
 	while (file != NULL)
 	{
 		if (file->err_msg != NULL)
 			ft_printf("ft_nm: %s: %s", file->filename, file->err_msg);
-		if (argc > 2 && file->err_msg == NULL)
+		if (total_filenm > 1 && file->err_msg == NULL)
 			ft_printf("\n%s:\n", file->filename);
 		ptr = file->sym;
 		while (ptr != NULL)
@@ -64,10 +65,10 @@ int				handle_arch(t_filenm **file, void *ptr)
 	if ((int)magic_number == FAT_MAGIC || (int)magic_number == FAT_CIGAM
 	||(int)magic_number == FAT_MAGIC_64 || (int)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag = IS_FAT;
-	ft_printf("is_64  :%d\n", (*file)->type_flag & IS_64);
-	ft_printf("is_AR  :%d\n", (*file)->type_flag & IS_AR);
-	ft_printf("is_FAT :%d\n", (*file)->type_flag & IS_FAT);
-	ft_printf("is_SWAP:%d\n", (*file)->type_flag & IS_SWAP);
+	// ft_printf("is_64  :%d\n", (*file)->type_flag & IS_64);
+	// ft_printf("is_AR  :%d\n", (*file)->type_flag & IS_AR);
+	// ft_printf("is_FAT :%d\n", (*file)->type_flag & IS_FAT);
+	// ft_printf("is_SWAP:%d\n", (*file)->type_flag & IS_SWAP);
 	if (((*file)->type_flag & IS_FAT))
 		handle_fat(file, ptr);
 	if (((*file)->type_flag & IS_AR))
@@ -135,7 +136,7 @@ int     main(int argc, char **argv)
     file = NULL;
     if ((get_file(&file, argc, argv)) < 0)
         return (EXIT_FAILURE);
-	print_symbol(argc, file);
+	print_symbol(count_filenm(file), file);
 	free_filenm(&file);
     return (EXIT_SUCCESS);
 }

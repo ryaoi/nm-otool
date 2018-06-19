@@ -12,6 +12,19 @@
 
 #include "ft_nm.h"
 
+int					count_filenm(t_filenm *file)
+{
+	int				ret;
+
+	ret = 0;
+	while(file != NULL)
+	{
+		file = file->next;
+		ret++;
+	}
+	return (ret);
+}
+
 static void			free_symbol(t_symbol **sym)
 {
 	t_symbol		*ptr;

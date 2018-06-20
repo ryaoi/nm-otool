@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:28:11 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 16:47:59 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 22:14:35 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,5 @@ int					main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	print_symbol(count_filenm(file), file);
 	free_filenm(&file);
-	while(1);
 	return (EXIT_SUCCESS);
 }

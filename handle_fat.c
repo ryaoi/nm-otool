@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/17 16:55:37 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:16:50 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 22:13:35 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int							handle_fat(t_filenm **file, void *ptr)
 	int						offset;
 
 	i = 0;
-	if ((*file)->type_flag == (IS_FAT))
+	if ((*file)->type_flag & (IS_FAT))
 	{
 		fatheader = (struct fat_header *)ptr;
 		fatarch = (void *)ptr + sizeof(struct fat_header);

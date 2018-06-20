@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 16:46:09 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 22:14:26 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int					handle_arch(t_filenm **file, void *ptr)
 		|| (uint32_t)magic_number == FAT_CIGAM
 		|| (uint32_t)magic_number == FAT_MAGIC_64\
 		|| (uint32_t)magic_number == FAT_CIGAM_64)
-		(*file)->type_flag = IS_FAT;
+		(*file)->type_flag += IS_FAT;
 	if (exec_handler(file, ptr, magic_number) < 0)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);

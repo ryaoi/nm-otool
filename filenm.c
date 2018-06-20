@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:32:54 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/17 16:50:06 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 15:26:36 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int					count_filenm(t_filenm *file)
 	int				ret;
 
 	ret = 0;
-	while(file != NULL)
+	while (file != NULL)
 	{
 		file = file->next;
 		ret++;
@@ -57,7 +57,7 @@ void				free_filenm(t_filenm **head)
 		if (ptr->secindex != NULL)
 			free(ptr->secindex);
 		free(ptr);
-		ptr = next;	
+		ptr = next;
 	}
 }
 
@@ -76,7 +76,7 @@ t_filenm			*add_filenm(t_filenm **head, char *name)
 	else
 	{
 		ptr = *head;
-		while(ptr->next != NULL)
+		while (ptr->next != NULL)
 			ptr = ptr->next;
 		ptr->next = new;
 	}

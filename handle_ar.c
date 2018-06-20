@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 18:59:16 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:06:08 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 16:26:09 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int					handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar)
 					+ atoi(ar_header->size);
 		name = lib_and_objname((*file)->filename, \
 							(void *)ar_header + sizeof(t_obj_header));
-		file_ptr = add_filenm(&file_ar, name);
+		file_ptr = add_filenm(&file_ar, name, (*file)->type_flag & IS_OTOOL);
 		free(name);
 		handle_arch(&file_ptr, (void *)ptr + atoi(ar_header->name + 3) - 20);
 		ptr = (void *)ptr + atoi(ar_header->size) + sizeof(t_obj_header);

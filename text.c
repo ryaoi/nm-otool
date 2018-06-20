@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_macho.c                                     :+:      :+:    :+:   */
+/*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 16:35:16 by ryaoi            ###   ########.fr       */
+/*   Created: 2018/06/20 15:53:01 by ryaoi             #+#    #+#             */
+/*   Updated: 2018/06/20 18:45:53 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void							search_section_index64(t_secindex **secindex,\
-														void *lc)
+t_textinfo						*get_text_info64(void *lc)
 {
 	struct segment_command_64	*seg_cmd64;
 	struct section_64			*sec64;
 	uint32_t					i;
+	t_textinfo					*textinfo;
 
+	if (!(textinfo = ft_memalloc(sizeof(t_textinfo))))
+		return (NULL);
 	seg_cmd64 = (struct segment_command_64 *)lc;
 	sec64 = (void *)lc + sizeof(struct segment_command_64);
 	i = 0;
@@ -27,28 +29,28 @@ void							search_section_index64(t_secindex **secindex,\
 		if (ft_strcmp(SEG_TEXT, sec64->segname) == 0)
 		{
 			if (ft_strcmp(SECT_TEXT, sec64->sectname) == 0)
-				(*secindex)->text_text = (*secindex)->index;
+			{
+				textinfo->offset = sec64->offset;
+				textinfo->size = sec64->size;
+				textinfo->start_offset = sec64->addr;
+				return (textinfo);
+			}
 		}
-		else if (ft_strcmp(SEG_DATA, sec64->segname) == 0)
-		{
-			if (ft_strcmp(SECT_DATA, sec64->sectname) == 0)
-				(*secindex)->data_data = (*secindex)->index;
-			if (ft_strcmp(SECT_BSS, sec64->sectname) == 0)
-				(*secindex)->data_bss = (*secindex)->index;
-		}
-		(*secindex)->index += 1;
 		sec64 = (void *)sec64 + sizeof(struct section_64);
 		i++;
 	}
+	return (NULL);
 }
 
-void							search_section_index(t_secindex **secindex, \
-													void *lc)
+t_textinfo						*get_text_info(void *lc)
 {
 	struct segment_command		*seg_cmd;
 	struct section				*sec;
 	uint32_t					i;
+	t_textinfo					*textinfo;
 
+	if (!(textinfo = ft_memalloc(sizeof(t_textinfo))))
+		return (NULL);
 	seg_cmd = (struct segment_command *)lc;
 	sec = (void *)lc + sizeof(struct segment_command);
 	i = 0;
@@ -57,27 +59,26 @@ void							search_section_index(t_secindex **secindex, \
 		if (ft_strcmp(SEG_TEXT, sec->segname) == 0)
 		{
 			if (ft_strcmp(SECT_TEXT, sec->sectname) == 0)
-				(*secindex)->text_text = (*secindex)->index;
+			{
+				textinfo->offset = sec->offset;
+				textinfo->size = sec->size;
+				textinfo->start_offset = sec->addr;
+				return (textinfo);
+			}
 		}
-		else if (ft_strcmp(SEG_DATA, sec->segname) == 0)
-		{
-			if (ft_strcmp(SECT_DATA, sec->sectname) == 0)
-				(*secindex)->data_data = (*secindex)->index;
-			if (ft_strcmp(SECT_BSS, sec->sectname) == 0)
-				(*secindex)->data_bss = (*secindex)->index;
-		}
-		(*secindex)->index += 1;
 		sec = (void *)sec + sizeof(struct section);
 		i++;
 	}
+	return (NULL);
 }
 
-int								get_secindex64(t_secindex **secindex, \
+int								search_text_segment64(t_filenm **file, \
 											struct mach_header_64 *header64,\
 											void *ptr)
 {
 	uint32_t					i;
 	struct load_command			*lc;
+	t_textinfo					*textinfo;
 
 	lc = (void *)ptr + sizeof(struct mach_header_64);
 	i = 0;
@@ -85,23 +86,31 @@ int								get_secindex64(t_secindex **secindex, \
 	{
 		if (lc->cmd == LC_SEGMENT_64)
 		{
-			search_section_index64(secindex, lc);
+			textinfo = get_text_info64(lc);
+			if (textinfo != NULL)
+			{
+				if (!((*file)->text = ft_memalloc(textinfo->size)))
+					return (EXIT_FAILURE);
+				ft_memcpy((*file)->text, \
+						(void *)ptr + textinfo->offset, textinfo->size);
+				(*file)->text_start_offset = textinfo->start_offset;
+				(*file)->text_size = textinfo->size;
+				break ;	
+			}
 		}
-		if (lc->cmd == LC_SYMTAB)
-			break ;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	(*secindex)->symtab_value = (void *)lc;
 	return (EXIT_SUCCESS);
 }
 
-int								get_secindex(t_secindex **secindex, \
+int								search_text_segment(t_filenm **file, \
 											struct mach_header *header,\
 											void *ptr)
 {
 	uint32_t					i;
 	struct load_command			*lc;
+	t_textinfo					*textinfo;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
 	i = 0;
@@ -109,39 +118,38 @@ int								get_secindex(t_secindex **secindex, \
 	{
 		if (lc->cmd == LC_SEGMENT)
 		{
-			search_section_index(secindex, lc);
+			textinfo = get_text_info(lc);
+			if (textinfo != NULL)
+			{
+				if (!((*file)->text = ft_memalloc(textinfo->size)))
+					return (EXIT_FAILURE);
+				ft_memcpy((*file)->text, \
+						(void *)ptr + textinfo->offset, textinfo->size);
+				(*file)->text_start_offset = textinfo->start_offset;
+				(*file)->text_size = textinfo->size;
+				break ;	
+			}
 		}
-		if (lc->cmd == LC_SYMTAB)
-			break ;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	(*secindex)->symtab_value = (void *)lc;
 	return (EXIT_SUCCESS);
 }
 
-int								handle_macho(t_filenm **file, void *ptr)
+int				get_text(t_filenm **file, void *ptr,\
+			 struct mach_header_64 *header64, struct mach_header *header)
 {
-	struct mach_header_64		*header64;
-	struct mach_header			*header;
-
-	if (init_secindex(&((*file)->secindex)) < 0)
-		return (EXIT_FAILURE);
-	if (((*file)->type_flag & IS_64))
+	if (header == NULL)
 	{
-		header64 = (struct mach_header_64 *)ptr;
-		if ((*file)->type_flag & IS_OTOOL)
-			return (get_text(file, ptr, header64, NULL));
-		get_secindex64(&((*file)->secindex), header64, ptr);
-		get_symbol(file, (*file)->secindex, ptr);
+		ft_printf("64\n");
+		if ((search_text_segment64(file, header64, ptr)) < 0)
+			return (EXIT_FAILURE);
 	}
 	else
 	{
-		header = (struct mach_header *)ptr;
-		if ((*file)->type_flag & IS_OTOOL)
-			return (get_text(file, ptr, NULL, header));
-		get_secindex(&((*file)->secindex), header, ptr);
-		get_symbol(file, (*file)->secindex, ptr);
+		ft_printf("32\n");
+		if ((search_text_segment(file, header, ptr)) < 0)
+			return (EXIT_FAILURE);	
 	}
 	return (EXIT_SUCCESS);
 }

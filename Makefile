@@ -6,7 +6,7 @@
 #    By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/14 18:49:54 by ryaoi             #+#    #+#              #
-#    Updated: 2018/06/20 14:19:10 by ryaoi            ###   ########.fr        #
+#    Updated: 2018/06/20 17:21:57 by ryaoi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,33 +26,37 @@ SRCS_NM		= 	nm.c \
 				symbol.c \
 				handle_ar.c \
 				handle_fat.c \
-				handle_macho.c
+				text.c \
+				handle_macho.c \
+				handle_arch.c \
+				handle_file.c
 
-SRCS_OTOOL	= 	nm.c \
+SRCS_OTOOL	= 	otool.c \
 				filenm.c \
-				print_symbol.c \
-				secindex.c \
-				sort_symbol.c \
-				swapbyte.c \
-				symbol.c \
+				text.c \
 				handle_ar.c \
 				handle_fat.c \
-				handle_macho.c
+				swapbyte.c \
+				symbol.c \
+				handle_macho.c \
+				handle_arch.c \
+				handle_file.c \
+				secindex.c \
+				sort_symbol.c \
+				print_text.c
 
 OBJ_NM		= $(SRCS_NM:.c=.o)
 OBJ_OTOOL	= $(SRCS_OTOOL:.c=.o)
 
 INCLUDE	= -I./ft_nm.h \
-		  -I./ft_otool.h \
 		  -I./libft/libft.h
 
 HEADER  = ./ft_nm.h \
-		  ./ft_otool.h \
 		  ./libft/libft.h
 
 CC		= gcc
 
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -fsanitize=address
 
 all: $(NAME_NM) $(NAME_OTOOL)
 
@@ -63,10 +67,10 @@ $(LIBFT):
 	make -C $(DIR_LIB)
 
 $(NAME_NM): $(LIBFT) $(OBJ_NM) $(HEADER) 
-	$(CC) -o $(NAME_NM) ./libft/libft.a $(OBJ_NM) $(INCLUDE) 
+	$(CC) $(CFLAGS) -o $(NAME_NM) ./libft/libft.a $(OBJ_NM) $(INCLUDE) 
 
 $(NAME_OTOOL): $(LIBFT) $(OBJ_OTOOL) $(HEADER) 
-	$(CC) -o $(NAME_OTOOL) ./libft/libft.a $(OBJ_OTOOL) $(INCLUDE) 
+	$(CC) $(CFLAGS) -o $(NAME_OTOOL) ./libft/libft.a $(OBJ_OTOOL) $(INCLUDE) 
 
 clean:
 	make clean -C $(DIR_LIB)

@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:27:56 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 17:09:48 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <errno.h>
 #include "./libft/libft.h"
 
+# define				IS_OTOOL	16
 # define 				IS_64		8
 # define				IS_AR		4
 # define				IS_FAT		2
@@ -54,6 +55,9 @@ typedef struct			s_filenm
 	char				*err_msg;
 	t_symbol			*sym;
 	t_secindex			*secindex;
+	void				*text;
+	uint32_t			text_size;
+	uint64_t			text_start_offset;
 	struct s_filenm		*next;
 }						t_filenm;
 
@@ -68,7 +72,14 @@ typedef struct			s_obj_header
 	char				end_header[4];
 }						t_obj_header;
 
-t_filenm				*add_filenm(t_filenm **head, char *name);
+typedef struct			s_textinfo
+{
+	int					offset;
+	int					size;
+	uint64_t			start_offset;
+}						t_textinfo;
+
+t_filenm				*add_filenm(t_filenm **head, char *name, int is_otool);
 int						count_filenm(t_filenm *file);
 int						init_secindex(t_secindex **head);
 int						handle_arch(t_filenm **file, void *ptr);
@@ -76,9 +87,13 @@ int						handle_macho(t_filenm **file, void *ptr);
 int						get_symbol(t_filenm **file, t_secindex *secindex, void *ptr);
 int						sort_symbol(t_symbol **sym);
 void					free_filenm(t_filenm **head);
+int						handle_file(t_filenm **ptr);
 int						handle_fat(t_filenm **file, void *ptr);
 int						handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar);
 int						print_symbol(int total_filenm, t_filenm *file);
+void					print_text(t_filenm *file);
+int						get_text(t_filenm **file, void *ptr,\
+				 struct mach_header_64 *header64, struct mach_header *header);
 uint32_t				swap32(u_int32_t origin);
 uint16_t				swap16(u_int16_t origin);
 

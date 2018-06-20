@@ -6,13 +6,13 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:18:43 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 15:24:49 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-static char				get_n_type_value(uint8_t n_type, uint64_t n_value)
+static char					get_n_type_value(uint8_t n_type, uint64_t n_value)
 {
 	if ((n_type == (N_UNDF + N_EXT) || n_type == N_UNDF) && n_value == 0)
 		return ('U');
@@ -31,10 +31,10 @@ static char				get_n_type_value(uint8_t n_type, uint64_t n_value)
 	return (0);
 }
 
-char					get_type(t_secindex *secindex, uint8_t n_type, \
+char						get_type(t_secindex *secindex, uint8_t n_type, \
 								uint16_t n_sect, uint64_t n_value)
 {
-	char				ret_type;
+	char					ret_type;
 
 	if ((ret_type = get_n_type_value(n_type, n_value)))
 		return (ret_type);
@@ -58,8 +58,8 @@ char					get_type(t_secindex *secindex, uint8_t n_type, \
 		return ('s');
 }
 
-int						add_symbol(t_filenm **head, char *symname, \
-								uint8_t n_type, uint64_t n_value, uint16_t n_sect)
+int							add_symbol64(t_filenm **head, char *symname, \
+								struct nlist_64 nlist64)
 {
 	t_symbol				*new;
 	t_symbol				*ptr;
@@ -68,8 +68,9 @@ int						add_symbol(t_filenm **head, char *symname, \
 		return (EXIT_FAILURE);
 	if (!(new->name = ft_strdup(symname)))
 		return (EXIT_FAILURE);
-	new->type = get_type((*head)->secindex, n_type, n_sect, n_value);
-	new->value = n_value;
+	new->type = get_type((*head)->secindex, nlist64.n_type, \
+						nlist64.n_sect, nlist64.n_value);
+	new->value = nlist64.n_value;
 	new->next = NULL;
 	if ((*head)->sym == NULL)
 		(*head)->sym = new;
@@ -80,7 +81,32 @@ int						add_symbol(t_filenm **head, char *symname, \
 			ptr = ptr->next;
 		ptr->next = new;
 	}
+	return (EXIT_SUCCESS);
+}
 
+int							add_symbol(t_filenm **head, char *symname, \
+								struct nlist nlist)
+{
+	t_symbol				*new;
+	t_symbol				*ptr;
+
+	if (!(new = malloc(sizeof(t_symbol))))
+		return (EXIT_FAILURE);
+	if (!(new->name = ft_strdup(symname)))
+		return (EXIT_FAILURE);
+	new->type = get_type((*head)->secindex, nlist.n_type, \
+						nlist.n_sect, nlist.n_value);
+	new->value = nlist.n_value;
+	new->next = NULL;
+	if ((*head)->sym == NULL)
+		(*head)->sym = new;
+	else
+	{
+		ptr = (*head)->sym;
+		while (ptr->next != NULL)
+			ptr = ptr->next;
+		ptr->next = new;
+	}
 	return (EXIT_SUCCESS);
 }
 
@@ -98,15 +124,15 @@ int							get_symbol(t_filenm **file, \
 	nlist64 = (void *)ptr + sym->symoff;
 	nlist32 = (void *)ptr + sym->symoff;
 	stringtable = (void *)ptr + sym->stroff;
-	while(i < sym->nsyms)
+	while (i < sym->nsyms)
 	{
 		if ((*file)->type_flag & IS_64)
-			add_symbol(file, stringtable + nlist64[i].n_un.n_strx, \
-			nlist64[i].n_type, nlist64[i].n_value, nlist64[i].n_sect);
+			add_symbol64(file, stringtable + nlist64[i].n_un.n_strx, \
+			nlist64[i]);
 		else
 		{
 			add_symbol(file, stringtable + nlist32[i].n_un.n_strx, \
-			nlist32[i].n_type, nlist32[i].n_value, nlist32[i].n_sect);
+			nlist32[i]);
 		}
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/18 18:19:21 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 15:11:36 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int							search_section_index64(t_secindex **secindex, void *lc)
 {
 	struct segment_command_64	*seg_cmd64;
 	struct section_64			*sec64;
-	int							i;
+	uint32_t					i;
 
 	seg_cmd64 = (struct segment_command_64 *)lc;
 	sec64 = (void *)lc + sizeof(struct segment_command_64);
@@ -47,7 +47,7 @@ int							search_section_index(t_secindex **secindex, void *lc)
 {
 	struct segment_command		*seg_cmd;
 	struct section				*sec;
-	int							i;
+	uint32_t					i;
 
 	seg_cmd = (struct segment_command *)lc;
 	sec = (void *)lc + sizeof(struct segment_command);
@@ -77,7 +77,7 @@ int							get_secindex64(t_secindex **secindex, \
 											struct mach_header_64 *header64,\
 											void *ptr)
 {
-	int						i;
+	uint32_t				i;
 	struct load_command		*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header_64);
@@ -101,7 +101,7 @@ int							get_secindex(t_secindex **secindex, \
 											struct mach_header *header,\
 											void *ptr)
 {
-	int						i;
+	uint32_t				i;
 	struct load_command		*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
@@ -138,9 +138,6 @@ int							handle_macho(t_filenm **file, void *ptr)
 	{
 		header = (struct mach_header *)ptr;
 		get_secindex(&((*file)->secindex), header, ptr);
-	// 		ft_printf("%i->__TEXT,__text\n", (*file)->secindex->text_text);
-	// ft_printf("%i->__DATA,__data\n", (*file)->secindex->data_data);
-	// ft_printf("%i->__DATA,__bss\n", (*file)->secindex->data_bss);
 		get_symbol(file, (*file)->secindex, ptr);
 	}
 	return (EXIT_SUCCESS);

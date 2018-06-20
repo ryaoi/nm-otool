@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/18 18:10:41 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 15:18:43 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char				get_n_type_value(uint8_t n_type, uint64_t n_value)
 		return ('a');
 	else if (n_type == N_INDR)
 		return ('I');
-	else if (n_type ==  N_INDR + N_EXT)
+	else if (n_type == N_INDR + N_EXT)
 		return ('I');
 	return (0);
 }
@@ -44,11 +44,11 @@ char					get_type(t_secindex *secindex, uint8_t n_type, \
 		return ('T');
 	else if (n_sect == secindex->text_text)
 		return ('t');
-	else if (n_sect == secindex->data_data && (n_type &  N_EXT))
+	else if (n_sect == secindex->data_data && (n_type & N_EXT))
 		return ('D');
 	else if (n_sect == secindex->data_data)
 		return ('d');
-	else if  (n_sect == secindex->data_bss && (n_type &  N_EXT))
+	else if (n_sect == secindex->data_bss && (n_type & N_EXT))
 		return ('B');
 	else if (n_sect == secindex->data_bss)
 		return ('b');
@@ -88,7 +88,7 @@ int							get_symbol(t_filenm **file, \
 										t_secindex *secindex, void *ptr)
 {
 	struct symtab_command	*sym;
-	int						i;
+	uint32_t				i;
 	char					*stringtable;
 	struct nlist_64			*nlist64;
 	struct nlist			*nlist32;

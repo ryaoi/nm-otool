@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 14:08:21 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 14:10:07 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 19:13:43 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int				print_symbol(int total_filenm, t_filenm *file)
 	while (file != NULL)
 	{
 		if (file->err_msg != NULL)
-			ft_printf("ft_nm: %s: %s", file->filename, file->err_msg);
+			ft_printf("ft_nm: %s: %s\n", file->filename, file->err_msg);
 		if (total_filenm > 1 && file->err_msg == NULL)
 			ft_printf("\n%s:\n", file->filename);
 		ptr = file->sym;

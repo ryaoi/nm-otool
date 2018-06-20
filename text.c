@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 15:53:01 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 18:45:53 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/20 19:10:05 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_textinfo						*get_text_info64(void *lc)
 		sec64 = (void *)sec64 + sizeof(struct section_64);
 		i++;
 	}
+	free(textinfo);
 	return (NULL);
 }
 
@@ -69,6 +70,7 @@ t_textinfo						*get_text_info(void *lc)
 		sec = (void *)sec + sizeof(struct section);
 		i++;
 	}
+	free(textinfo);
 	return (NULL);
 }
 
@@ -95,6 +97,7 @@ int								search_text_segment64(t_filenm **file, \
 						(void *)ptr + textinfo->offset, textinfo->size);
 				(*file)->text_start_offset = textinfo->start_offset;
 				(*file)->text_size = textinfo->size;
+				free(textinfo);
 				break ;	
 			}
 		}
@@ -127,6 +130,7 @@ int								search_text_segment(t_filenm **file, \
 						(void *)ptr + textinfo->offset, textinfo->size);
 				(*file)->text_start_offset = textinfo->start_offset;
 				(*file)->text_size = textinfo->size;
+				free(textinfo);
 				break ;	
 			}
 		}
@@ -141,13 +145,11 @@ int				get_text(t_filenm **file, void *ptr,\
 {
 	if (header == NULL)
 	{
-		ft_printf("64\n");
 		if ((search_text_segment64(file, header64, ptr)) < 0)
 			return (EXIT_FAILURE);
 	}
 	else
 	{
-		ft_printf("32\n");
 		if ((search_text_segment(file, header, ptr)) < 0)
 			return (EXIT_FAILURE);	
 	}

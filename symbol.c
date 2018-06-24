@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:24:49 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/22 15:56:56 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static char					get_n_type_value(uint8_t n_type, uint64_t n_value)
 		return ('C');
 	if (n_type == N_UNDF)
 		return ('c');
-	else if (n_type == N_ABS)
-		return ('A');
 	else if (n_type == N_ABS + N_EXT)
+		return ('A');
+	else if (n_type == N_ABS)
 		return ('a');
 	else if (n_type == N_INDR)
 		return ('I');

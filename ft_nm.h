@@ -6,32 +6,36 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 17:09:48 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/21 14:38:47 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef FT_NM_H
+#ifndef FT_NM_H
 # define FT_NM_H
 
-#include <sys/mman.h>
-#include <mach-o/loader.h>
-#include <mach-o/nlist.h>
-#include <mach-o/fat.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include "./libft/libft.h"
+# include <sys/mman.h>
+# include <mach-o/loader.h>
+# include <mach-o/nlist.h>
+# include <mach-o/fat.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <errno.h>
+# include "./libft/libft.h"
 
-# define				IS_OTOOL	16
-# define 				IS_64		8
-# define				IS_AR		4
-# define				IS_FAT		2
-# define				IS_SWAP 	1
+# define IS_OTOOL 16
+# define IS_64 8
+# define IS_AR 4
+# define IS_FAT 2
+# define ERR_OPEN_PERM "Permission denied\n"
+# define ERR_OPEN_NOSUCH "No such file or directory.\n"
+# define ERR_FSTAT "fstat failed\n"
+# define ERR_MMAP_NM "The file was not recognized as a valid object file\n"
+# define ERR_MMAP_OTOOL " is not an object file\n"
+# define ERR_MUNMAP "munmap failed\n"
+# define MH_AR_64 0x213C617263683E0A
+# define MH_RA_64 0x0a3e686372613c21
 
-# define				MH_AR_64	0x213C617263683E0A
-# define				MH_RA_64	0x0a3e686372613c21
-
-typedef struct          s_symbol
+typedef struct			s_symbol
 {
 	char				*name;
 	uint8_t				type;
@@ -84,16 +88,18 @@ int						count_filenm(t_filenm *file);
 int						init_secindex(t_secindex **head);
 int						handle_arch(t_filenm **file, void *ptr);
 int						handle_macho(t_filenm **file, void *ptr);
-int						get_symbol(t_filenm **file, t_secindex *secindex, void *ptr);
+int						get_symbol(t_filenm **file, t_secindex *secindex,\
+								void *ptr);
 int						sort_symbol(t_symbol **sym);
 void					free_filenm(t_filenm **head);
 int						handle_file(t_filenm **ptr);
 int						handle_fat(t_filenm **file, void *ptr);
-int						handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar);
+int						handle_ar(t_filenm **file, void *ptr,\
+								t_filenm *file_ar);
 int						print_symbol(int total_filenm, t_filenm *file);
 void					print_text(t_filenm *file);
 int						get_text(t_filenm **file, void *ptr,\
-				 struct mach_header_64 *header64, struct mach_header *header);
+				struct mach_header_64 *header64, struct mach_header *header);
 uint32_t				swap32(u_int32_t origin);
 uint16_t				swap16(u_int16_t origin);
 

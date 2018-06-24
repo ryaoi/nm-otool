@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 15:32:59 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 21:57:40 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/21 17:38:03 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,14 @@ static int			get_file(t_filenm **file, int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
-int main(int argc, char **argv)
+int					main(int argc, char **argv)
 {
-	t_filenm *file;
+	t_filenm		*file;
 
 	file = NULL;
 	if ((get_file(&file, argc, argv)) < 0)
 		return (EXIT_FAILURE);
 	print_text(file);
 	free_filenm(&file);
-	// while(1);
 	return (EXIT_SUCCESS);
 }

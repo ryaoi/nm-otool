@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 22:14:26 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/21 14:39:28 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,6 @@ int					handle_arch(t_filenm **file, void *ptr)
 		(*file)->type_flag += IS_64;
 	if (magic_number == (long)MH_AR_64 || magic_number == (long)MH_RA_64)
 		(*file)->type_flag += IS_AR;
-	if ((uint32_t)magic_number == MH_CIGAM_64 \
-		|| (uint32_t)magic_number == MH_CIGAM\
-		|| (uint32_t)magic_number == FAT_CIGAM\
-		|| (uint32_t)magic_number == FAT_CIGAM_64)
-		(*file)->type_flag += IS_SWAP;
 	if ((uint32_t)magic_number == FAT_MAGIC\
 		|| (uint32_t)magic_number == FAT_CIGAM
 		|| (uint32_t)magic_number == FAT_MAGIC_64\

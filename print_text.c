@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:49:38 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 22:16:40 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/21 13:16:37 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int			print_address(t_filenm *file, uint32_t offset)
 	if (file->type_flag & IS_64)
 		ft_printf("%016x", file->text_start_offset + offset);
 	else
-		ft_printf("%08x", file->text_start_offset + offset);	
+		ft_printf("%08x", file->text_start_offset + offset);
 	ft_printf("        ");
 	align = 16;
 	while (i < align && (offset + i) < file->text_size)
@@ -59,6 +59,6 @@ void				print_text(t_filenm *file)
 				offset += print_address(file, offset);
 			ft_printf("\n");
 		}
-		file = file->next;	
+		file = file->next;
 	}
 }

@@ -6,7 +6,7 @@
 #    By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/14 18:49:54 by ryaoi             #+#    #+#              #
-#    Updated: 2018/06/24 18:57:41 by ryaoi            ###   ########.fr        #
+#    Updated: 2018/06/24 21:20:25 by ryaoi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,10 @@ SRCS_NM		= 	nm.c \
 				text.c \
 				handle_macho.c \
 				handle_arch.c \
-				handle_file.c
+				handle_file.c \
+				handle_powerpc.c \
+				symbol_swap.c \
+				textswap.c
 
 SRCS_OTOOL	= 	otool.c \
 				filenm.c \
@@ -43,7 +46,11 @@ SRCS_OTOOL	= 	otool.c \
 				handle_file.c \
 				secindex.c \
 				sort_symbol.c \
-				print_text.c
+				print_text.c \
+				print_symbol.c \
+				handle_powerpc.c \
+				symbol_swap.c \
+				textswap.c
 
 OBJ_NM		= $(SRCS_NM:.c=.o)
 OBJ_OTOOL	= $(SRCS_OTOOL:.c=.o)
@@ -61,7 +68,7 @@ CFLAGS	= -Wall -Wextra -Werror
 all: $(NAME_NM) $(NAME_OTOOL)
 
 %.o:%.c $(HEADER)
-	$(CC) -I./$(INCLUDE) -o $@ -c $< 
+	$(CC) $(CFLAGS) -I./$(INCLUDE) -o $@ -c $< 
 
 $(LIBFT):
 	make -C $(DIR_LIB)
@@ -74,7 +81,8 @@ $(NAME_OTOOL): $(LIBFT) $(OBJ_OTOOL) $(HEADER)
 
 clean:
 	make clean -C $(DIR_LIB)
-	rm -rf $(OBJ)
+	rm -rf $(OBJ_NM)
+	rm -rf $(OBJ_OTOOL)
 
 fclean: clean
 	make fclean -C $(DIR_LIB)

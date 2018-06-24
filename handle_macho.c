@@ -6,13 +6,13 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 22:13:50 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/24 21:23:17 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void							search_section_index64(t_secindex **secindex,\
+static void						search_section_index64(t_secindex **secindex,\
 														void *lc)
 {
 	struct segment_command_64	*seg_cmd64;
@@ -42,7 +42,7 @@ void							search_section_index64(t_secindex **secindex,\
 	}
 }
 
-void							search_section_index(t_secindex **secindex, \
+static void						search_section_index(t_secindex **secindex, \
 													void *lc)
 {
 	struct segment_command		*seg_cmd;
@@ -72,7 +72,7 @@ void							search_section_index(t_secindex **secindex, \
 	}
 }
 
-int								get_secindex64(t_secindex **secindex, \
+static int						get_secindex64(t_secindex **secindex, \
 											struct mach_header_64 *header64,\
 											void *ptr)
 {
@@ -96,7 +96,7 @@ int								get_secindex64(t_secindex **secindex, \
 	return (EXIT_SUCCESS);
 }
 
-int								get_secindex(t_secindex **secindex, \
+static int						get_secindex(t_secindex **secindex, \
 											struct mach_header *header,\
 											void *ptr)
 {

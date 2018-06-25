@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:49:38 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 22:32:52 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 18:27:01 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int			print_ppc(t_filenm *file, uint32_t offset)
 	{
 		ptr = (void *)file->text + offset + i;
 		ft_printf("%08x", swap32((*(unsigned int *)ptr)));
-		if (i+4 != align)
+		if (i + 4 != align)
 			ft_putstr(" ");
 		else
 			ft_putstr("\n");
@@ -44,7 +44,7 @@ static int			print_address(t_filenm *file, uint32_t offset)
 		ft_printf("%016x", file->text_start_offset + offset);
 	else
 		ft_printf("%08x", file->text_start_offset + offset);
-	ft_printf("        ");
+	ft_printf("\t");
 	align = 16;
 	if (ft_strstr(file->filename, "(architecture ppc)"))
 		return (print_ppc(file, offset));
@@ -52,12 +52,10 @@ static int			print_address(t_filenm *file, uint32_t offset)
 	{
 		ptr = (void *)file->text + offset + i;
 		ft_printf("%02x", (*(unsigned char *)ptr));
-		if (i < align - 1)
-			ft_putstr(" ");
-		else
-			ft_putstr("\n");
+		ft_putstr(" ");
 		i++;
 	}
+	ft_putstr("\n");
 	return (i);
 }
 

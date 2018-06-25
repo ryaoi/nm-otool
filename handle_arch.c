@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 19:26:22 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 14:55:58 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int			exec_handler(t_filenm **file, void *ptr, long magic_number)
 {
 	if (((*file)->type_flag & IS_FAT))
 	{
-		if ((handle_fat(file, ptr)) < 0)
+		if ((handle_fat(file, ptr, NULL)) < 0)
 			return (EXIT_FAILURE);
 	}
 	else if (((*file)->type_flag & IS_AR))

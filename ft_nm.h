@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 21:38:36 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 15:34:23 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <errno.h>
 # include "./libft/libft.h"
 
+# define WAS_FAT 64
 # define IS_POWERPC 32
 # define IS_OTOOL 16
 # define IS_64 8
@@ -89,7 +90,7 @@ int						count_filenm(t_filenm *file);
 int						init_secindex(t_secindex **head);
 int						handle_arch(t_filenm **file, void *ptr);
 int						handle_macho(t_filenm **file, void *ptr);
-int						handle_powerpc(t_filenm **file, void* ptr);
+int						handle_powerpc(t_filenm **file, void *ptr);
 int						get_symbol(t_filenm **file, t_secindex *secindex,\
 								void *ptr);
 int						get_symbolswap(t_filenm **file, \
@@ -97,7 +98,8 @@ int						get_symbolswap(t_filenm **file, \
 int						sort_symbol(t_symbol **sym);
 void					free_filenm(t_filenm **head);
 int						handle_file(t_filenm **ptr);
-int						handle_fat(t_filenm **file, void *ptr);
+int						handle_fat(t_filenm **file, void *ptr,\
+								struct fat_header *fatheader);
 int						handle_ar(t_filenm **file, void *ptr,\
 								t_filenm *file_ar);
 int						print_symbol(int total_filenm, t_filenm *file);

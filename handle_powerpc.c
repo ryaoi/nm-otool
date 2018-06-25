@@ -6,13 +6,11 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/24 19:12:15 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 22:00:11 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 13:58:33 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
-
-
 
 static void						search_section_index(t_secindex **secindex, \
 													void *lc)
@@ -29,9 +27,7 @@ static void						search_section_index(t_secindex **secindex, \
 		if (ft_strcmp(SEG_TEXT, sec->segname) == 0)
 		{
 			if (ft_strcmp(SECT_TEXT, sec->sectname) == 0)
-			{
 				(*secindex)->text_text = (*secindex)->index;
-			}
 		}
 		else if (ft_strcmp(SEG_DATA, sec->segname) == 0)
 		{
@@ -46,7 +42,7 @@ static void						search_section_index(t_secindex **secindex, \
 	}
 }
 
-static int							get_secindex(t_secindex **secindex, \
+static int						get_secindex(t_secindex **secindex, \
 											struct mach_header *header,\
 											void *ptr)
 {
@@ -70,7 +66,7 @@ static int							get_secindex(t_secindex **secindex, \
 	return (EXIT_SUCCESS);
 }
 
-int								handle_powerpc(t_filenm **file, void* ptr)
+int								handle_powerpc(t_filenm **file, void *ptr)
 {
 	struct mach_header			*header;
 	struct load_command			*lc;

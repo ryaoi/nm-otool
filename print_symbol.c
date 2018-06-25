@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 14:08:21 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/21 13:47:13 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 14:32:10 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int				print_symbol(int total_filenm, t_filenm *file)
 	{
 		if (file->err_msg != NULL)
 			ft_printf("ft_nm: %s: %s\n", file->filename, file->err_msg);
-		if (total_filenm > 1 && file->err_msg == NULL)
+		if (!(file->type_flag & WAS_FAT) && (ft_strstr(file->filename, ".a("))\
+			&& total_filenm > 1 && file->err_msg == NULL)
 			ft_printf("\n%s:\n", file->filename);
 		ptr = file->sym;
 		while (ptr != NULL)

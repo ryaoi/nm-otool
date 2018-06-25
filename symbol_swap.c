@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/24 20:47:37 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 21:47:47 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/25 13:57:15 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static char					get_type(t_secindex *secindex, uint8_t n_type, \
 								uint16_t n_sect, uint32_t n_value)
 {
 	char					ret_type;
-
 
 	if ((ret_type = get_n_type_value(n_type, n_value)))
 		return (ret_type);

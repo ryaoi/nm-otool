@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:49:38 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/26 18:17:08 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/26 18:19:04 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@ static int			print_ppc(t_filenm *file, uint32_t offset)
 	while (i < align && (offset + i) < file->text_size)
 	{
 		ptr = (void *)file->text + offset + i;
-		ft_printf("%08x", swap32((*(unsigned int *)ptr)));
-		if (i + 4 != align)
-			ft_putstr(" ");
-		else
-			ft_putstr("\n");
+		ft_printf("%08x ", swap32((*(unsigned int *)ptr)));
 		i += 4;
 	}
 	ft_putstr("\n");

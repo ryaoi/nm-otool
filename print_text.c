@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:49:38 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/25 18:27:01 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/26 18:07:09 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ void				print_text(t_filenm *file)
 			offset = 0;
 			while (offset < file->text_size)
 				offset += print_address(file, offset);
-			ft_printf("\n");
 		}
 		file = file->next;
 	}

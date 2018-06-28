@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/25 15:34:23 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 21:57:16 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define ERR_MMAP_NM "The file was not recognized as a valid object file\n"
 # define ERR_MMAP_OTOOL " is not an object file\n"
 # define ERR_MUNMAP "munmap failed\n"
+# define ERR_MSG_CORRUPT "corrupted file\n"
 # define MH_AR_64 0x213C617263683E0A
 # define MH_RA_64 0x0a3e686372613c21
 
@@ -64,6 +65,8 @@ typedef struct			s_filenm
 	void				*text;
 	uint32_t			text_size;
 	uint64_t			text_start_offset;
+	int64_t				filesize;
+	int64_t				real_filesize;
 	struct s_filenm		*next;
 }						t_filenm;
 

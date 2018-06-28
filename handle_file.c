@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:47:44 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/21 14:41:06 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 21:58:15 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int					handle_file(t_filenm **ptr)
 	else if ((mmap_ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0))\
 			== MAP_FAILED)
 	{
+		(*ptr)->filesize = buf.st_size;
 		if ((*ptr)->type_flag & IS_OTOOL)
 			(*ptr)->err_msg = \
 				ft_strdup(ERR_MMAP_OTOOL);
@@ -43,7 +44,11 @@ int					handle_file(t_filenm **ptr)
 			ft_strdup(ERR_MMAP_NM);
 	}
 	else
+	{
+		(*ptr)->filesize = buf.st_size;
+		(*ptr)->real_filesize = buf.st_size;
 		handle_arch(ptr, mmap_ptr);
+	}
 	if ((mmap_ptr != MAP_FAILED) && ((munmap(mmap_ptr, buf.st_size)) < 0))
 		(*ptr)->err_msg = ft_strdup(ERR_MUNMAP);
 	return (EXIT_SUCCESS);

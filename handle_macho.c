@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/24 21:23:17 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 23:15:58 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ static void						search_section_index(t_secindex **secindex, \
 	}
 }
 
-static int						get_secindex64(t_secindex **secindex, \
+static int						get_secindex64(t_filenm **file,\
+											t_secindex **secindex, \
 											struct mach_header_64 *header64,\
 											void *ptr)
 {
@@ -80,23 +81,25 @@ static int						get_secindex64(t_secindex **secindex, \
 	struct load_command			*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header_64);
+	(*file)->filesize -= sizeof(struct mach_header_64);
 	i = 0;
-	while (i < header64->ncmds)
+	while (i < header64->ncmds && (*file)->filesize >= lc->cmdsize)
 	{
 		if (lc->cmd == LC_SEGMENT_64)
-		{
 			search_section_index64(secindex, lc);
-		}
 		if (lc->cmd == LC_SYMTAB)
-			break ;
+			(*secindex)->symtab_value = (void *)lc;
+		(*file)->filesize -= lc->cmdsize;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	(*secindex)->symtab_value = (void *)lc;
+	if (i != header64->ncmds || (*secindex)->symtab_value == NULL)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
-static int						get_secindex(t_secindex **secindex, \
+static int						get_secindex(t_filenm **file,\
+											t_secindex **secindex, \
 											struct mach_header *header,\
 											void *ptr)
 {
@@ -104,19 +107,20 @@ static int						get_secindex(t_secindex **secindex, \
 	struct load_command			*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
+	(*file)->filesize -= sizeof(struct mach_header);
 	i = 0;
-	while (i < header->ncmds)
+	while (i < header->ncmds && (*file)->filesize >= lc->cmdsize)
 	{
 		if (lc->cmd == LC_SEGMENT)
-		{
 			search_section_index(secindex, lc);
-		}
 		if (lc->cmd == LC_SYMTAB)
-			break ;
+			(*secindex)->symtab_value = (void *)lc;
+		(*file)->filesize -= lc->cmdsize;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	(*secindex)->symtab_value = (void *)lc;
+	if (i != header->ncmds || (*secindex)->symtab_value == NULL)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -132,16 +136,24 @@ int								handle_macho(t_filenm **file, void *ptr)
 		header64 = (struct mach_header_64 *)ptr;
 		if ((*file)->type_flag & IS_OTOOL)
 			return (get_text(file, ptr, header64, NULL));
-		get_secindex64(&((*file)->secindex), header64, ptr);
-		get_symbol(file, (*file)->secindex, ptr);
+		if ((get_secindex64(file, &((*file)->secindex), header64, ptr)) == EXIT_FAILURE)
+		{
+			(*file)->err_msg = ft_strdup(ERR_MMAP_NM);
+			return (EXIT_FAILURE);
+		}
 	}
 	else
 	{
 		header = (struct mach_header *)ptr;
 		if ((*file)->type_flag & IS_OTOOL)
 			return (get_text(file, ptr, NULL, header));
-		get_secindex(&((*file)->secindex), header, ptr);
-		get_symbol(file, (*file)->secindex, ptr);
+		if ((get_secindex(file, &((*file)->secindex), header, ptr)) == EXIT_FAILURE)
+		{
+			(*file)->err_msg = ft_strdup(ERR_MMAP_NM);
+			return (EXIT_FAILURE);
+		}
 	}
+	if ((get_symbol(file, (*file)->secindex, ptr)) == EXIT_FAILURE)
+		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
 	return (EXIT_SUCCESS);
 }

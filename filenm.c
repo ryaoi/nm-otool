@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:32:54 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 19:10:47 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 21:57:40 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ t_filenm			*add_filenm(t_filenm **head, char *name, int is_otool)
 
 	if (!(new = malloc(sizeof(t_filenm))))
 		return (NULL);
-	*new = (t_filenm){NULL, 0, NULL, NULL, NULL, NULL, 0, 0, NULL};
+	*new = (t_filenm){NULL, 0, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 	if (is_otool)
 		new->type_flag += is_otool;
 	if (!(new->filename = ft_strdup(name)))

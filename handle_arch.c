@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/25 14:55:58 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 16:49:22 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int					handle_arch(t_filenm **file, void *ptr)
 {
 	long			magic_number;
 
+	
 	magic_number = *(long *)ptr;
 	if ((uint32_t)magic_number == MH_MAGIC_64 \
 		|| (uint32_t)magic_number == MH_CIGAM_64\

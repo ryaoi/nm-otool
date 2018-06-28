@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/22 15:56:56 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 23:15:48 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,21 +121,34 @@ int							get_symbol(t_filenm **file, \
 
 	i = 0;
 	sym = (struct symtab_command *)secindex->symtab_value;
-	nlist64 = (void *)ptr + sym->symoff;
-	nlist32 = (void *)ptr + sym->symoff;
+	(*file)->filesize = (*file)->real_filesize - (int64_t)sym->symoff;
+	if ((*file)->filesize < 0 \
+		|| ((nlist64 = (void *)ptr + sym->symoff) == NULL)\
+		|| ((nlist32 = (void *)ptr + sym->symoff) == NULL))
+		return (EXIT_FAILURE);
 	stringtable = (void *)ptr + sym->stroff;
-	while (i < sym->nsyms)
+	while (i < sym->nsyms && (*file)->filesize >= (int)sizeof(struct nlist))
 	{
 		if ((*file)->type_flag & IS_64)
-			add_symbol64(file, stringtable + nlist64[i].n_un.n_strx, \
+		{
+			if ((int64_t)(stringtable + nlist64[i].n_un.n_strx) < (int64_t)ptr + (*file)->real_filesize)
+				add_symbol64(file, stringtable + nlist64[i].n_un.n_strx, \
 			nlist64[i]);
+			else
+				return (EXIT_FAILURE);
+		}
 		else
 		{
-			add_symbol(file, stringtable + nlist32[i].n_un.n_strx, \
+			if ((int64_t)(stringtable + nlist32[i].n_un.n_strx)  < (int64_t)ptr + (*file)->real_filesize)
+				add_symbol(file, stringtable + nlist32[i].n_un.n_strx, \
 			nlist32[i]);
+			else
+				return (EXIT_FAILURE);
 		}
 		i++;
 	}
+	if (i != sym->nsyms)
+		return (EXIT_FAILURE);
 	sort_symbol(&((*file)->sym));
 	return (EXIT_SUCCESS);
 }

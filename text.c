@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 15:53:01 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/21 13:14:03 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 20:53:44 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,14 @@ int								search_text_segment64(t_filenm **file, \
 	t_textinfo					*textinfo;
 
 	lc = (void *)ptr + sizeof(struct mach_header_64);
-	while (i < header64->ncmds)
+	(*file)->filesize -= sizeof(struct mach_header_64);
+	while (i < header64->ncmds && (*file)->filesize >= lc->cmdsize)
 	{
 		if (lc->cmd == LC_SEGMENT_64)
 		{
 			textinfo = get_text_info64(lc);
-			if (textinfo != NULL)
+			if (textinfo != NULL && (((*file)->filesize - \
+				(int64_t)ptr + textinfo->offset - textinfo->size) > 0))
 			{
 				if (!((*file)->text = ft_memalloc(textinfo->size)))
 					return (EXIT_FAILURE);
@@ -95,9 +97,12 @@ int								search_text_segment64(t_filenm **file, \
 				break ;
 			}
 		}
+		(*file)->filesize -= lc->cmdsize;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
+	if (i != header64->ncmds  || (*file)->text_size == 0)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -109,12 +114,14 @@ static int						search_text_segment(t_filenm **file, \
 	t_textinfo					*textinfo;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
-	while (i < header->ncmds)
+	(*file)->filesize -= sizeof(struct mach_header);
+	while (i < header->ncmds && (*file)->filesize >= lc->cmdsize)
 	{
 		if (lc->cmd == LC_SEGMENT)
 		{
 			textinfo = get_text_info(lc);
-			if (textinfo != NULL)
+			if (textinfo != NULL && (((*file)->filesize - \
+				(int64_t)ptr + textinfo->offset - textinfo->size) > 0))
 			{
 				if (!((*file)->text = ft_memalloc(textinfo->size)))
 					return (EXIT_FAILURE);
@@ -126,9 +133,12 @@ static int						search_text_segment(t_filenm **file, \
 				break ;
 			}
 		}
+		(*file)->filesize -= lc->cmdsize;
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
+	if (i != header->ncmds || (*file)->text_size == 0)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -138,13 +148,19 @@ int								get_text(t_filenm **file, void *ptr,\
 {
 	if (header == NULL)
 	{
-		if ((search_text_segment64(file, header64, ptr, 0)) < 0)
+		if ((search_text_segment64(file, header64, ptr, 0)) == EXIT_FAILURE)
+		{
+			(*file)->err_msg = ft_strdup(ERR_MMAP_OTOOL);
 			return (EXIT_FAILURE);
+		}
 	}
 	else
 	{
-		if ((search_text_segment(file, header, ptr, 0)) < 0)
+		if ((search_text_segment(file, header, ptr, 0)) == EXIT_FAILURE)
+		{
+			(*file)->err_msg = ft_strdup(ERR_MMAP_OTOOL);
 			return (EXIT_FAILURE);
+		}
 	}
 	return (EXIT_SUCCESS);
 }

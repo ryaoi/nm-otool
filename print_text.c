@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:49:38 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/26 18:19:04 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 13:55:22 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,9 @@ void				print_text(t_filenm *file)
 			ft_putstr_fd(file->filename, 2);
 			ft_putstr_fd(":", 2);
 			ft_putstr_fd(file->err_msg, 2);
+			return ;
 		}
-		else
+		else if (file->text_size != 0)
 		{
 			ft_printf("%s:\nContents of (__TEXT,__text) section\n", \
 					file->filename);

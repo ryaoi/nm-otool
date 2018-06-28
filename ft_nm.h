@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 21:57:16 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/28 23:28:03 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <mach-o/loader.h>
 # include <mach-o/nlist.h>
 # include <mach-o/fat.h>
+# include <mach/machine.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <errno.h>
@@ -87,6 +88,19 @@ typedef struct			s_textinfo
 	int					size;
 	uint64_t			start_offset;
 }						t_textinfo;
+
+typedef struct			s_fatarch
+{
+	uint32_t			intel64_offset;
+	uint32_t			intel64_size;
+	uint32_t			intel32_offset;
+	uint32_t			intel32_size;
+	uint32_t			ppc64_offset;
+	uint32_t			ppc64_size;
+	uint32_t			ppc32_offset;
+	uint32_t			ppc32_size;
+
+}						t_fatarch;
 
 t_filenm				*add_filenm(t_filenm **head, char *name, int is_otool);
 int						count_filenm(t_filenm *file);

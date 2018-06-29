@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 23:28:03 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/29 20:22:11 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,14 @@
 # define ERR_MMAP_OTOOL " is not an object file\n"
 # define ERR_MUNMAP "munmap failed\n"
 # define ERR_MSG_CORRUPT "corrupted file\n"
+# define ARCH_X86_64_NM " (architecture x86_64)"
+# define ARCH_X86_64_OTOOL " (for architecture x86_64)"
+# define ARCH_I386_NM " (architecture i386)"
+# define ARCH_I386_OTOOL " (for architecture i386)"
+# define ARCH_PPC64_NM " (architecture ppc64)"
+# define ARCH_PPC64_OTOOL " (for architecture ppc64)"
+# define ARCH_PPC_NM " (architecture ppc)"
+# define ARCH_PPC_OTOOL " (for architecture ppc)"
 # define MH_AR_64 0x213C617263683E0A
 # define MH_RA_64 0x0a3e686372613c21
 
@@ -89,7 +97,7 @@ typedef struct			s_textinfo
 	uint64_t			start_offset;
 }						t_textinfo;
 
-typedef struct			s_fatarch
+typedef struct			s_arch
 {
 	uint32_t			intel64_offset;
 	uint32_t			intel64_size;
@@ -99,8 +107,7 @@ typedef struct			s_fatarch
 	uint32_t			ppc64_size;
 	uint32_t			ppc32_offset;
 	uint32_t			ppc32_size;
-
-}						t_fatarch;
+}						t_arch;
 
 t_filenm				*add_filenm(t_filenm **head, char *name, int is_otool);
 int						count_filenm(t_filenm *file);
@@ -117,6 +124,8 @@ void					free_filenm(t_filenm **head);
 int						handle_file(t_filenm **ptr);
 int						handle_fat(t_filenm **file, void *ptr,\
 								struct fat_header *fatheader);
+int						handle_multiple_arch(t_filenm **file, void *ptr,\
+								t_arch arch);
 int						handle_ar(t_filenm **file, void *ptr,\
 								t_filenm *file_ar);
 int						print_symbol(int total_filenm, t_filenm *file);

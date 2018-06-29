@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/24 19:12:15 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/25 13:58:33 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/29 20:35:31 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ static void						search_section_index(t_secindex **secindex, \
 	}
 }
 
-static int						get_secindex(t_secindex **secindex, \
+static int						get_secindex(t_filenm **file,
+											t_secindex **secindex, \
 											struct mach_header *header,\
 											void *ptr)
 {
@@ -50,37 +51,36 @@ static int						get_secindex(t_secindex **secindex, \
 	struct load_command			*lc;
 
 	lc = (void *)ptr + sizeof(struct mach_header);
+	(*file)->filesize -= sizeof(struct mach_header);
 	i = 0;
-	while (i < swap32(header->ncmds))
+	while (i < swap32(header->ncmds) \
+			&& (*file)->filesize >= swap32(lc->cmdsize))
 	{
 		if (swap32(lc->cmd) == LC_SEGMENT)
-		{
 			search_section_index(secindex, lc);
-		}
 		if (swap32(lc->cmd) == LC_SYMTAB)
-			break ;
+			(*secindex)->symtab_value = (void *)lc;
+		(*file)->filesize -= swap32(lc->cmdsize);
 		lc = (void *)lc + swap32(lc->cmdsize);
 		i++;
 	}
-	(*secindex)->symtab_value = (void *)lc;
+	if (i != header->ncmds || (*secindex)->symtab_value == NULL)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
 int								handle_powerpc(t_filenm **file, void *ptr)
 {
 	struct mach_header			*header;
-	struct load_command			*lc;
 	uint32_t					i;
 
 	header = (struct mach_header *)ptr;
-	lc = (void *)ptr + sizeof(struct mach_header);
 	i = 0;
 	if (init_secindex(&((*file)->secindex)) < 0)
 		return (EXIT_FAILURE);
-	header = (struct mach_header *)ptr;
 	if ((*file)->type_flag & IS_OTOOL)
 		return (get_textswap(file, ptr, header));
-	get_secindex(&((*file)->secindex), header, ptr);
+	get_secindex(file, &((*file)->secindex), header, ptr);
 	get_symbolswap(file, (*file)->secindex, ptr);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 16:49:22 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/29 15:57:22 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,26 @@ static int			exec_handler(t_filenm **file, void *ptr, long magic_number)
 {
 	if (((*file)->type_flag & IS_FAT))
 	{
-		if ((handle_fat(file, ptr, NULL)) < 0)
+		if ((handle_fat(file, ptr, NULL)) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	else if (((*file)->type_flag & IS_AR))
 	{
-		if ((handle_ar(file, ptr, NULL)) < 0)
+		if ((handle_ar(file, ptr, NULL)) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	else if (((*file)->type_flag & IS_64) || (uint32_t)magic_number == MH_MAGIC\
 			|| (uint32_t)magic_number == MH_CIGAM)
 	{
-		if ((handle_macho(file, ptr)) < 0)
+		if ((handle_macho(file, ptr)) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	else if ((*file)->type_flag & IS_OTOOL)
 		(*file)->err_msg = \
-			ft_strdup(" is not an object file\n");
+			ft_strdup(ERR_MMAP_OTOOL);
 	else
 		(*file)->err_msg = \
-			ft_strdup("The file was not recognized as a valid object file\n");
+			ft_strdup(ERR_MMAP_NM);
 	return (EXIT_SUCCESS);
 }
 
@@ -57,7 +57,7 @@ int					handle_arch(t_filenm **file, void *ptr)
 		|| (uint32_t)magic_number == FAT_MAGIC_64\
 		|| (uint32_t)magic_number == FAT_CIGAM_64)
 		(*file)->type_flag += IS_FAT;
-	if (exec_handler(file, ptr, magic_number) < 0)
+	if (exec_handler(file, ptr, magic_number) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

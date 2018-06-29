@@ -6,7 +6,7 @@
 #    By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/14 18:49:54 by ryaoi             #+#    #+#              #
-#    Updated: 2018/06/28 21:27:57 by ryaoi            ###   ########.fr        #
+#    Updated: 2018/06/29 20:22:34 by ryaoi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRCS_NM		= 	nm.c \
 				symbol.c \
 				handle_ar.c \
 				handle_fat.c \
+				handle_fat_sub.c \
 				text.c \
 				handle_macho.c \
 				handle_arch.c \
@@ -39,6 +40,7 @@ SRCS_OTOOL	= 	otool.c \
 				text.c \
 				handle_ar.c \
 				handle_fat.c \
+				handle_fat_sub.c \
 				swapbyte.c \
 				symbol.c \
 				handle_macho.c \

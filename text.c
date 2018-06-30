@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 15:53:01 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 20:53:44 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/30 15:50:25 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ int								search_text_segment64(t_filenm **file, \
 		if (lc->cmd == LC_SEGMENT_64)
 		{
 			textinfo = get_text_info64(lc);
-			if (textinfo != NULL && (((*file)->filesize - \
-				(int64_t)ptr + textinfo->offset - textinfo->size) > 0))
+			if (textinfo != NULL)
 			{
 				if (!((*file)->text = ft_memalloc(textinfo->size)))
 					return (EXIT_FAILURE);
@@ -101,7 +100,7 @@ int								search_text_segment64(t_filenm **file, \
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	if (i != header64->ncmds  || (*file)->text_size == 0)
+	if ((*file)->text_size == 0)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
@@ -120,8 +119,7 @@ static int						search_text_segment(t_filenm **file, \
 		if (lc->cmd == LC_SEGMENT)
 		{
 			textinfo = get_text_info(lc);
-			if (textinfo != NULL && (((*file)->filesize - \
-				(int64_t)ptr + textinfo->offset - textinfo->size) > 0))
+			if (textinfo != NULL)
 			{
 				if (!((*file)->text = ft_memalloc(textinfo->size)))
 					return (EXIT_FAILURE);
@@ -137,7 +135,7 @@ static int						search_text_segment(t_filenm **file, \
 		lc = (void *)lc + lc->cmdsize;
 		i++;
 	}
-	if (i != header->ncmds || (*file)->text_size == 0)
+	if ((*file)->text_size == 0)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

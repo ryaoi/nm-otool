@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 18:59:16 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 13:33:05 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/06/30 15:29:41 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,22 +81,42 @@ int					handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar)
 	char			*name;
 	int				iter;
 
+	if ((*file)->filesize < (int64_t)(sizeof(MH_AR_64) + sizeof(t_obj_header)))
+	{
+		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
+		return (EXIT_FAILURE);
+	}
 	ar_header = (void *)ptr + sizeof(MH_AR_64);
 	iter = count_symtable((void *)ar_header + sizeof(t_obj_header) + 28, \
 		(*(int *)((void *)ar_header + sizeof(t_obj_header) + 20)) / 8, 0);
 	ptr = (void *)ptr + sizeof(MH_AR_64) + sizeof(t_obj_header) + \
-		ft_atoi(ar_header->size) + 20 + sizeof(t_obj_header);
+		ft_atoi(ar_header->size) + ft_atoi(ar_header->name + 3) + sizeof(t_obj_header);
+	(*file)->filesize -= (sizeof(MH_AR_64) + sizeof(t_obj_header) + \
+		ft_atoi(ar_header->size));
+	if ((*file)->filesize < 0)
+		iter = -1;
 	while (iter)
 	{
 		ar_header = (void *)ar_header + sizeof(t_obj_header) \
 					+ ft_atoi(ar_header->size);
+		(*file)->filesize -= (ft_atoi(ar_header->size) + sizeof(t_obj_header));
+		if (ar_header->name[0] != '#' || (*file)->filesize < 0)
+			break;
 		name = lib_and_objname((*file)->filename, \
 							(void *)ar_header + sizeof(t_obj_header));
 		file_ptr = add_filenm(&file_ar, name, (*file)->type_flag & IS_OTOOL);
+		file_ptr->filesize = ft_atoi(ar_header->size);
+		file_ptr->real_filesize = ft_atoi(ar_header->size);
 		free(name);
 		handle_arch(&file_ptr, (void *)ptr + ft_atoi(ar_header->name + 3) - 20);
 		ptr = (void *)ptr + ft_atoi(ar_header->size) + sizeof(t_obj_header);
 		iter--;
+
+	}
+	if (iter != 0)
+	{
+		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
+		return (EXIT_FAILURE);
 	}
 	link_file(file, &file_ar);
 	return (EXIT_SUCCESS);

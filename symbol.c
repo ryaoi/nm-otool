@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 23:15:48 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 15:12:14 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,6 @@ int							get_symbol(t_filenm **file, \
 {
 	struct symtab_command	*sym;
 	uint32_t				i;
-	char					*stringtable;
 	struct nlist_64			*nlist64;
 	struct nlist			*nlist32;
 
@@ -126,25 +125,10 @@ int							get_symbol(t_filenm **file, \
 		|| ((nlist64 = (void *)ptr + sym->symoff) == NULL)\
 		|| ((nlist32 = (void *)ptr + sym->symoff) == NULL))
 		return (EXIT_FAILURE);
-	stringtable = (void *)ptr + sym->stroff;
 	while (i < sym->nsyms && (*file)->filesize >= (int)sizeof(struct nlist))
 	{
-		if ((*file)->type_flag & IS_64)
-		{
-			if ((int64_t)(stringtable + nlist64[i].n_un.n_strx) < (int64_t)ptr + (*file)->real_filesize)
-				add_symbol64(file, stringtable + nlist64[i].n_un.n_strx, \
-			nlist64[i]);
-			else
-				return (EXIT_FAILURE);
-		}
-		else
-		{
-			if ((int64_t)(stringtable + nlist32[i].n_un.n_strx)  < (int64_t)ptr + (*file)->real_filesize)
-				add_symbol(file, stringtable + nlist32[i].n_un.n_strx, \
-			nlist32[i]);
-			else
-				return (EXIT_FAILURE);
-		}
+		if ((get_symbol_sub(file, ptr, nlist64[i],nlist32[i])) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		i++;
 	}
 	if (i != sym->nsyms)

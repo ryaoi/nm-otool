@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 18:57:41 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/28 23:15:58 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 14:53:28 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,31 +129,25 @@ int								handle_macho(t_filenm **file, void *ptr)
 	struct mach_header_64		*header64;
 	struct mach_header			*header;
 
+	header64 = NULL;
+	header = NULL;
 	if (init_secindex(&((*file)->secindex)) < 0)
 		return (EXIT_FAILURE);
-	if (((*file)->type_flag & IS_64))
+	if (((*file)->type_flag & IS_64) > 1)
 	{
 		header64 = (struct mach_header_64 *)ptr;
-		if ((*file)->type_flag & IS_OTOOL)
-			return (get_text(file, ptr, header64, NULL));
-		if ((get_secindex64(file, &((*file)->secindex), header64, ptr)) == EXIT_FAILURE)
-		{
-			(*file)->err_msg = ft_strdup(ERR_MMAP_NM);
-			return (EXIT_FAILURE);
-		}
+		if ((get_secindex64(file, &((*file)->secindex), header64, ptr))\
+			== EXIT_FAILURE)
+			return (corrupt_msg(file));
 	}
 	else
 	{
 		header = (struct mach_header *)ptr;
-		if ((*file)->type_flag & IS_OTOOL)
-			return (get_text(file, ptr, NULL, header));
-		if ((get_secindex(file, &((*file)->secindex), header, ptr)) == EXIT_FAILURE)
-		{
-			(*file)->err_msg = ft_strdup(ERR_MMAP_NM);
-			return (EXIT_FAILURE);
-		}
+		if ((get_secindex(file, &((*file)->secindex), header, ptr))\
+			== EXIT_FAILURE)
+			return (corrupt_msg(file));
 	}
-	if ((get_symbol(file, (*file)->secindex, ptr)) == EXIT_FAILURE)
-		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
+	if (((get_symbol_and_text(file, ptr, header64, header))) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

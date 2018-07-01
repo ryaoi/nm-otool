@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:47:44 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/29 16:18:31 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 13:36:21 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ static int			open_failed(t_filenm **ptr)
 	if (errno == ENOENT)
 		(*ptr)->err_msg = ft_strdup(ERR_OPEN_NOSUCH);
 	return (EXIT_SUCCESS);
+}
+
+static void			error_mmap(t_filenm **ptr, struct stat buf)
+{
+	(*ptr)->filesize = buf.st_size;
+	if ((*ptr)->type_flag & IS_OTOOL)
+		(*ptr)->err_msg = \
+			ft_strdup(ERR_MMAP_OTOOL);
+	else
+		(*ptr)->err_msg = \
+		ft_strdup(ERR_MMAP_NM);
 }
 
 int					handle_file(t_filenm **ptr)
@@ -34,15 +45,7 @@ int					handle_file(t_filenm **ptr)
 		(*ptr)->err_msg = ft_strdup(ERR_FSTAT);
 	else if ((mmap_ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0))\
 			== MAP_FAILED)
-	{
-		(*ptr)->filesize = buf.st_size;
-		if ((*ptr)->type_flag & IS_OTOOL)
-			(*ptr)->err_msg = \
-				ft_strdup(ERR_MMAP_OTOOL);
-		else
-			(*ptr)->err_msg = \
-			ft_strdup(ERR_MMAP_NM);
-	}
+		error_mmap(ptr, buf);
 	else
 	{
 		(*ptr)->filesize = buf.st_size;

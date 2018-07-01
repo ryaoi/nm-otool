@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/29 20:22:11 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 15:07:52 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,19 @@ int						count_filenm(t_filenm *file);
 int						init_secindex(t_secindex **head);
 int						handle_arch(t_filenm **file, void *ptr);
 int						handle_macho(t_filenm **file, void *ptr);
+int						get_symbol_and_text(t_filenm **file, void *ptr,\
+								struct mach_header_64 *header64,\
+								struct mach_header *header);
 int						handle_powerpc(t_filenm **file, void *ptr);
+int						add_symbol(t_filenm **head, char *symname, \
+								struct nlist nlist);
+int						add_symbol64(t_filenm **head, char *symname, \
+								struct nlist_64 nlist64);
 int						get_symbol(t_filenm **file, t_secindex *secindex,\
 								void *ptr);
+int						get_symbol_sub(t_filenm **file, void *ptr,\
+								 	struct nlist_64 nlist64,\
+									struct nlist nlist32);
 int						get_symbolswap(t_filenm **file, \
 							t_secindex *secindex, void *ptr);
 int						sort_symbol(t_symbol **sym);
@@ -134,6 +144,7 @@ int						get_text(t_filenm **file, void *ptr,\
 				struct mach_header_64 *header64, struct mach_header *header);
 int						get_textswap(t_filenm **file, void *ptr,\
 						struct mach_header *header);
+int						corrupt_msg(t_filenm **file);
 uint32_t				swap32(u_int32_t origin);
 uint16_t				swap16(u_int16_t origin);
 

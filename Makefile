@@ -6,7 +6,7 @@
 #    By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/14 18:49:54 by ryaoi             #+#    #+#              #
-#    Updated: 2018/06/29 20:22:34 by ryaoi            ###   ########.fr        #
+#    Updated: 2018/07/01 15:06:31 by ryaoi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,16 +24,19 @@ SRCS_NM		= 	nm.c \
 				sort_symbol.c \
 				swapbyte.c \
 				symbol.c \
+				symbol_sub.c \
 				handle_ar.c \
 				handle_fat.c \
 				handle_fat_sub.c \
 				text.c \
 				handle_macho.c \
+				handle_macho_sub.c \
 				handle_arch.c \
 				handle_file.c \
 				handle_powerpc.c \
 				symbol_swap.c \
-				textswap.c
+				textswap.c \
+				corrupt_msg.c
 
 SRCS_OTOOL	= 	otool.c \
 				filenm.c \
@@ -43,7 +46,9 @@ SRCS_OTOOL	= 	otool.c \
 				handle_fat_sub.c \
 				swapbyte.c \
 				symbol.c \
+				symbol_sub.c \
 				handle_macho.c \
+				handle_macho_sub.c \
 				handle_arch.c \
 				handle_file.c \
 				secindex.c \
@@ -52,7 +57,8 @@ SRCS_OTOOL	= 	otool.c \
 				print_symbol.c \
 				handle_powerpc.c \
 				symbol_swap.c \
-				textswap.c
+				textswap.c \
+				corrupt_msg.c
 
 OBJ_NM		= $(SRCS_NM:.c=.o)
 OBJ_OTOOL	= $(SRCS_OTOOL:.c=.o)

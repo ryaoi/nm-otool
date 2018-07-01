@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/24 20:47:37 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/25 13:57:15 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 15:09:54 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static char					get_type(t_secindex *secindex, uint8_t n_type, \
 		return ('s');
 }
 
-static int					add_symbol(t_filenm **head, char *symname, \
+static int					add_symbolswap(t_filenm **head, char *symname, \
 								struct nlist nlist)
 {
 	t_symbol				*new;
@@ -98,7 +98,7 @@ int							get_symbolswap(t_filenm **file, \
 	stringtable = (void *)ptr + swap32(sym->stroff);
 	while (i < swap32(sym->nsyms))
 	{
-		add_symbol(file, stringtable + swap32(nlist[i].n_un.n_strx), \
+		add_symbolswap(file, stringtable + swap32(nlist[i].n_un.n_strx), \
 			nlist[i]);
 		i++;
 	}

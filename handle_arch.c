@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 16:45:49 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/29 15:57:22 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 18:15:10 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static int			exec_handler(t_filenm **file, void *ptr, long magic_number)
 	}
 	else if (((*file)->type_flag & IS_AR))
 	{
-		if ((handle_ar(file, ptr, NULL)) == EXIT_FAILURE)
+		if ((handle_ar(file, ptr, NULL, (void *)ptr + sizeof(MH_AR_64)))\
+			== EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
 	else if (((*file)->type_flag & IS_64) || (uint32_t)magic_number == MH_MAGIC\
@@ -43,7 +44,6 @@ int					handle_arch(t_filenm **file, void *ptr)
 {
 	long			magic_number;
 
-	
 	magic_number = *(long *)ptr;
 	if ((uint32_t)magic_number == MH_MAGIC_64 \
 		|| (uint32_t)magic_number == MH_CIGAM_64\

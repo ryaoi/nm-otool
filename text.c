@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 15:53:01 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/30 18:27:56 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 15:23:19 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,8 @@ int								search_text_segment64(t_filenm **file, \
 			textinfo = get_text_info64(lc);
 			if (textinfo != NULL)
 			{
-				if (!((*file)->text = ft_memalloc(textinfo->size)))
+				if (copy_text_section(file, ptr, textinfo) == EXIT_FAILURE)
 					return (EXIT_FAILURE);
-				ft_memcpy((*file)->text, \
-						(void *)ptr + textinfo->offset, textinfo->size);
-				(*file)->text_start_offset = textinfo->start_offset;
-				(*file)->text_size = textinfo->size;
-				free(textinfo);
 				break ;
 			}
 		}
@@ -121,13 +116,8 @@ static int						search_text_segment(t_filenm **file, \
 			textinfo = get_text_info(lc);
 			if (textinfo != NULL)
 			{
-				if (!((*file)->text = ft_memalloc(textinfo->size)))
+				if (copy_text_section(file, ptr, textinfo) == EXIT_FAILURE)
 					return (EXIT_FAILURE);
-				ft_memcpy((*file)->text, \
-						(void *)ptr + textinfo->offset, textinfo->size);
-				(*file)->text_start_offset = textinfo->start_offset;
-				(*file)->text_size = textinfo->size;
-				free(textinfo);
 				break ;
 			}
 		}

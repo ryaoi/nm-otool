@@ -6,7 +6,7 @@
 #    By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/14 18:49:54 by ryaoi             #+#    #+#              #
-#    Updated: 2018/07/01 15:06:31 by ryaoi            ###   ########.fr        #
+#    Updated: 2018/07/01 15:19:46 by ryaoi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,8 @@ SRCS_NM		= 	nm.c \
 				handle_powerpc.c \
 				symbol_swap.c \
 				textswap.c \
-				corrupt_msg.c
+				corrupt_msg.c \
+				copy_text_section.c
 
 SRCS_OTOOL	= 	otool.c \
 				filenm.c \
@@ -58,7 +59,8 @@ SRCS_OTOOL	= 	otool.c \
 				handle_powerpc.c \
 				symbol_swap.c \
 				textswap.c \
-				corrupt_msg.c
+				corrupt_msg.c \
+				copy_text_section.c
 
 OBJ_NM		= $(SRCS_NM:.c=.o)
 OBJ_OTOOL	= $(SRCS_OTOOL:.c=.o)

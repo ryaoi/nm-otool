@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/17 14:06:22 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/20 15:27:21 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 19:12:30 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@ int				sort_symbol(t_symbol **sym)
 			{
 				if ((swap_symbol(&ptr, &next)) < 0)
 					return (EXIT_FAILURE);
+			}
+			if (ft_strcmp(ptr->name, next->name) == 0\
+				&& ptr->value > next->value)
+			{
+				if ((swap_symbol(&ptr, &next)) < 0)
+					return (EXIT_FAILURE);				
 			}
 			next = next->next;
 		}

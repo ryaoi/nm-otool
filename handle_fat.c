@@ -6,13 +6,13 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/17 16:55:37 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/30 15:46:58 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 19:27:10 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-static int64_t 				align_fat(int64_t value, uint32_t align)
+static int64_t				align_fat(int64_t value, uint32_t align)
 {
 	return ((((value) + ((align) - 1)) & ~((align) - 1)));
 }
@@ -20,7 +20,8 @@ static int64_t 				align_fat(int64_t value, uint32_t align)
 static void					check_cpu_type(struct fat_arch *fatarch,\
 											t_arch *arch)
 {
-	if (swap32(fatarch->cputype) == CPU_TYPE_X86_64)
+	if (swap32(fatarch->cputype) == CPU_TYPE_X86_64 \
+		&& (swap32(fatarch->cpusubtype) & CPU_SUBTYPE_X86_64_ALL))
 	{
 		arch->intel64_size = \
 			align_fat(swap32(fatarch->size), 1 << swap32(fatarch->align));
@@ -75,6 +76,7 @@ static void					choose_cpu_type(t_filenm **file, \
 		*file = file_ptr;
 	}
 }
+
 static void					filesize_checker(t_filenm **file,\
 										struct fat_arch *fatarch,\
 										uint32_t *i,
@@ -84,7 +86,7 @@ static void					filesize_checker(t_filenm **file,\
 		(*file)->filesize -= swap32(fatarch->offset);
 	if (*i != swap32(fatheader->nfat_arch) - 1)
 		(*file)->filesize -=\
-			 (align_fat(swap32(fatarch->size), 1 << swap32(fatarch->align)));
+			(align_fat(swap32(fatarch->size), 1 << swap32(fatarch->align)));
 	else
 		(*file)->filesize -= swap32(fatarch->size);
 	*i = *i + 1;
@@ -95,7 +97,7 @@ int							handle_fat(t_filenm **file, void *ptr,\
 {
 	struct fat_arch			*fatarch;
 	uint32_t				i;
-	t_arch					arch;				
+	t_arch					arch;
 
 	i = 0;
 	ft_bzero(&arch, sizeof(t_arch));
@@ -110,12 +112,9 @@ int							handle_fat(t_filenm **file, void *ptr,\
 			fatarch = (void *)fatarch + sizeof(struct fat_arch);
 		}
 		if (i != swap32(fatheader->nfat_arch) || (*file)->filesize != 0)
-		{
-			(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
-			return (EXIT_FAILURE);
-		}
+			return (corrupt_msg(file));
 		choose_cpu_type(file, &arch, ptr);
-		if ((handle_multiple_arch(file,ptr,arch)) == EXIT_FAILURE)
+		if ((handle_multiple_arch(file, ptr, arch)) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		return (EXIT_SUCCESS);
 	}

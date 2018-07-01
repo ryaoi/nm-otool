@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/18 18:59:16 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/06/30 15:29:41 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 19:45:42 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int			count_symtable(void *ptr, int iter, int ret)
 	return (ret);
 }
 
-static char			*lib_and_objname(char *filename, char *objname)
+static char			*lib_obj(char *filename, char *objname)
 {
 	char			*tmp1;
 	char			*tmp2;
@@ -55,11 +55,13 @@ static char			*lib_and_objname(char *filename, char *objname)
 	return (ret);
 }
 
-int					link_file(t_filenm **file, t_filenm **file_ar)
+int					link_file(t_filenm **file, t_filenm **file_ar, int iter)
 {
 	t_filenm		*next_save;
 	t_filenm		*end_ar_save;
 
+	if (iter != 0)
+		return (corrupt_msg(file));
 	if ((*file) == NULL)
 	{
 		(*file) = (*file_ar);
@@ -74,26 +76,41 @@ int					link_file(t_filenm **file, t_filenm **file_ar)
 	return (EXIT_SUCCESS);
 }
 
-int					handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar)
+static t_filenm		*get_object_from_ar(t_filenm **file, void *ptr,\
+									char *name, t_obj_header *ar_header)
 {
 	t_filenm		*file_ptr;
-	t_obj_header	*ar_header;
-	char			*name;
+	static t_filenm *file_ar = NULL;
+	// char			*tmp;
+
+	// if (file_ar == NULL)
+	// {
+	// 	tmp = ft_strjoin("Archive : ", (*file)->filename);
+	// 	tmp = ft_strjoini(tmp, "\n", 1);
+	// 	name = ft_strjoini(tmp, name, 3);
+	// }
+	file_ptr = add_filenm(&file_ar, name, (*file)->type_flag & IS_OTOOL);
+	file_ptr->filesize = ft_atoi(ar_header->size);
+	file_ptr->real_filesize = ft_atoi(ar_header->size);
+	free(name);
+	handle_arch(&file_ptr, (void *)ptr + ft_atoi(ar_header->name + 3) - 20);
+	return (file_ar);
+}
+
+int					handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar,\
+								t_obj_header *ar_header)
+{
 	int				iter;
 
 	if ((*file)->filesize < (int64_t)(sizeof(MH_AR_64) + sizeof(t_obj_header)))
-	{
-		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
-		return (EXIT_FAILURE);
-	}
-	ar_header = (void *)ptr + sizeof(MH_AR_64);
+		return (corrupt_msg(file));
 	iter = count_symtable((void *)ar_header + sizeof(t_obj_header) + 28, \
 		(*(int *)((void *)ar_header + sizeof(t_obj_header) + 20)) / 8, 0);
 	ptr = (void *)ptr + sizeof(MH_AR_64) + sizeof(t_obj_header) + \
-		ft_atoi(ar_header->size) + ft_atoi(ar_header->name + 3) + sizeof(t_obj_header);
-	(*file)->filesize -= (sizeof(MH_AR_64) + sizeof(t_obj_header) + \
-		ft_atoi(ar_header->size));
-	if ((*file)->filesize < 0)
+			ft_atoi(ar_header->size) + ft_atoi(ar_header->name + 3)\
+			+ sizeof(t_obj_header);
+	if (((*file)->filesize -= (sizeof(MH_AR_64) + sizeof(t_obj_header) + \
+	ft_atoi(ar_header->size))) < 0)
 		iter = -1;
 	while (iter)
 	{
@@ -101,23 +118,11 @@ int					handle_ar(t_filenm **file, void *ptr, t_filenm *file_ar)
 					+ ft_atoi(ar_header->size);
 		(*file)->filesize -= (ft_atoi(ar_header->size) + sizeof(t_obj_header));
 		if (ar_header->name[0] != '#' || (*file)->filesize < 0)
-			break;
-		name = lib_and_objname((*file)->filename, \
-							(void *)ar_header + sizeof(t_obj_header));
-		file_ptr = add_filenm(&file_ar, name, (*file)->type_flag & IS_OTOOL);
-		file_ptr->filesize = ft_atoi(ar_header->size);
-		file_ptr->real_filesize = ft_atoi(ar_header->size);
-		free(name);
-		handle_arch(&file_ptr, (void *)ptr + ft_atoi(ar_header->name + 3) - 20);
+			break ;
+		file_ar = get_object_from_ar(file, ptr, lib_obj((*file)->filename, \
+						(void *)ar_header + sizeof(t_obj_header)), ar_header);
 		ptr = (void *)ptr + ft_atoi(ar_header->size) + sizeof(t_obj_header);
 		iter--;
-
 	}
-	if (iter != 0)
-	{
-		(*file)->err_msg = ft_strdup(ERR_MSG_CORRUPT);
-		return (EXIT_FAILURE);
-	}
-	link_file(file, &file_ar);
-	return (EXIT_SUCCESS);
+	return (link_file(file, &file_ar, iter));
 }

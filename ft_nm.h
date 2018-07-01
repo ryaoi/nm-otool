@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 14:21:10 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/07/01 15:07:52 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 18:20:19 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int						add_symbol64(t_filenm **head, char *symname, \
 int						get_symbol(t_filenm **file, t_secindex *secindex,\
 								void *ptr);
 int						get_symbol_sub(t_filenm **file, void *ptr,\
-								 	struct nlist_64 nlist64,\
+									struct nlist_64 nlist64,\
 									struct nlist nlist32);
 int						get_symbolswap(t_filenm **file, \
 							t_secindex *secindex, void *ptr);
@@ -137,11 +137,13 @@ int						handle_fat(t_filenm **file, void *ptr,\
 int						handle_multiple_arch(t_filenm **file, void *ptr,\
 								t_arch arch);
 int						handle_ar(t_filenm **file, void *ptr,\
-								t_filenm *file_ar);
+								t_filenm *file_ar, t_obj_header *ar_header);
 int						print_symbol(int total_filenm, t_filenm *file);
 void					print_text(t_filenm *file);
 int						get_text(t_filenm **file, void *ptr,\
 				struct mach_header_64 *header64, struct mach_header *header);
+int						copy_text_section(t_filenm **file, void *ptr, \
+									t_textinfo *textinfo);
 int						get_textswap(t_filenm **file, void *ptr,\
 						struct mach_header *header);
 int						corrupt_msg(t_filenm **file);

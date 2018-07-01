@@ -6,7 +6,7 @@
 /*   By: ryaoi <ryaoi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/16 22:31:39 by ryaoi             #+#    #+#             */
-/*   Updated: 2018/07/01 15:12:14 by ryaoi            ###   ########.fr       */
+/*   Updated: 2018/07/01 21:12:31 by ryaoi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int							get_symbol(t_filenm **file, \
 		return (EXIT_FAILURE);
 	while (i < sym->nsyms && (*file)->filesize >= (int)sizeof(struct nlist))
 	{
-		if ((get_symbol_sub(file, ptr, nlist64[i],nlist32[i])) == EXIT_FAILURE)
+		if ((get_symbol_sub(file, ptr, nlist64[i], nlist32[i])) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		i++;
 	}
